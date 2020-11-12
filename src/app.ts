@@ -4,10 +4,10 @@ require('dotenv').config();
 const http = require('http');
 const cors = require('cors');
 
-const rotasFaturas = require('./src/app/routes/faturas');
-const rotasUsuarios = require('./src/app/routes/users');
+const rotasFaturas = require('./app/routes/faturas');
+const rotasUsuarios = require('./app/routes/users');
 
-const corsConfig = require('./src/config/cors');
+const corsConfig = require('./config/cors');
 
 const app = express();
 

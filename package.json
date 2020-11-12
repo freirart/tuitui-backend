@@ -2,10 +2,10 @@
   "name": "desafio-tecnico-music-playce",
   "version": "1.0.0",
   "description": "REST API para CRUD de Faturas",
-  "main": "app.js",
+  "main": "src/app.ts",
   "scripts": {
-    "start": "node app.ts",
-    "dev": "tsnd --transpile-only --ignore-watch node_modules --respawn app.ts"
+    "start": "node src/app.ts",
+    "dev": "tsnd --transpile-only --ignore-watch node_modules --respawn src/app.ts"
   },
   "repository": {
     "type": "git",
