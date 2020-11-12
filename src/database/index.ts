@@ -9,7 +9,4 @@ mongoose.connect(connectString, {
   useUnifiedTopology: true,
 });
 
-mongoose.Promise = global.Promise;
-
 module.exports = mongoose;  
-

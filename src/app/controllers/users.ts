@@ -1,15 +1,16 @@
+import { Request, Response, NextFunction } from 'express';
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 
-function generateToken(id) {
+function generateToken(id?: string) {
   return jwt.sign({ id }, process.env.SECRET_KEY, {
     expiresIn: 86400,
   });
 }
 
-exports.signUp = async (req, res, next) => {
+exports.signUp = async (req: Request, res: Response, next: NextFunction) => {
   const { username, password } = req.body;
 
   try {
@@ -19,9 +20,9 @@ exports.signUp = async (req, res, next) => {
 
     const user = await User.create({ username, password });
 
-    req.userId = generateToken(user._id);
+    req.userId = user._id;
     user.password = undefined;
-    res.status(201).json({ user, token: req.userId });
+    res.status(201).json({ user, token: generateToken(req.userId) });
 
   } catch (err) {
     console.log(err);
@@ -29,7 +30,7 @@ exports.signUp = async (req, res, next) => {
   }
 };
 
-exports.signIn = async (req, res, next) => {
+exports.signIn = async (req: Request, res: Response, next: NextFunction) => {
   const { username, password } = req.body;
 
   const user = await User.findOne({ username }).select('+password');
@@ -42,12 +43,6 @@ exports.signIn = async (req, res, next) => {
   if (!isPasswordCorrect)
     return res.status(401).json({ error: 'Wrong password.' });
 
-  const token = generateToken(user._id);
-
-  req.userId = token;
-  return res.status(200).json({ user, token });
+  req.userId = user._id;
+  res.status(200).json({ user, token: generateToken(req.userId) });
 };
-
-exports.fetchByPageNumber = async (req, res, next) => {
-  res.status(200).json({ message: 'Entrou com um token válido!' });
-}
