@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+const mongoose = require('mongoose');
 
 const Fatura = require('../models/faturas.ts');
 
@@ -8,8 +9,23 @@ interface Servico {
 };
 
 interface ObjectLiteral {
-  [key: string]: Function;
+  [key: string]: any;
 };
+
+const areServicesInvalid = (services: Array<Servico>) => {
+  // !! -> getting the boolean result of it (true: found invalid service)
+  return !!(services.find((service: Servico) => {
+      // characteristics that defines a invalid service
+      return (
+           !service.name 
+        || !service.value 
+        || typeof service.name !== 'string'
+        || typeof service.value !== 'number'
+        || Object.keys(service).length > 2
+      );
+    }
+  ));
+}
 
 const actions: ObjectLiteral = {
   "GET": (id: string, userId: string): Promise<object> => {
@@ -25,29 +41,57 @@ const actions: ObjectLiteral = {
   }
 };
 
+const isThereAnyBodyParamUndefined = (paramsObject: ObjectLiteral) => {
+  const keys = Object.keys(paramsObject);
+
+  for (const key of keys)
+    if (!paramsObject[key])
+      return { yes: true, whichOne: key };
+
+  return { whichOne: -1, yes: true };
+};
+
 exports.addFatura = async (req: Request, res: Response, next: NextFunction) => {
-  const { name, services, paid } = req.body;
-  let { totalValue } = req.body;
-
+  const { name, paid } = req.body;
+  let { validade } = req.body;
+  let services = req.body.services as Array<Servico> || [];
+  
   try {
-    if (!name || !services.length || !totalValue)
-      return res.status(501).json({ error: 'Invalid data provided.' });
+    const bodyParams = {
+      "fatura's name": name,
+      'services': services.length,
+      'validade': validade
+    };
+    const result = isThereAnyBodyParamUndefined(bodyParams);
+    if (result.yes)
+      return res.status(400).json({ error: `No ${result.whichOne} provided.` });
 
-    const trueServicesValue = services.reduce((acc: number, service: Servico) => {
+    if (areServicesInvalid(services)) {
+      return res.status(400).json({ 
+        error: `Services' objects MUST follow the pattern: { 'name': <string>, 'value': <number> }.`
+      });
+    }
+    
+    const [ year, month, day ] = validade.split('T')[0].split(/[\/\-]/);
+    if (!year || !month || !day) {
+      return res.status(400).json({
+        error: `Validade MUST follow the pattern: 'yyyy/mm/dd'.`
+      });
+    }
+    validade = new Date(year, month - 1, day);
+    
+    const totalValue = services.reduce((acc: number, service: Servico): number => {
       return acc + service.value;
     }, 0);
 
-    if (trueServicesValue !== totalValue) 
-      totalValue = trueServicesValue;
-
     const fatura = await Fatura.create({
-       name, services, totalValue, paid, user: req.userId
+       name, services, totalValue, paid, user: req.userId, validade
     });
   
     res.status(201).json({ fatura });
   } catch (err) {
     console.log(err);
-    res.status(400).json({ error: 'Error creating fatura.' })
+    res.status(500).json({ error: 'Error creating fatura.' })
   }
 };
 
@@ -77,15 +121,21 @@ exports.performById = async (req: Request, res: Response, next: NextFunction) =>
   const method = req.method.toUpperCase();
 
   try {
-    if (!faturaId)
-      return res.status(400).json({ error: 'Invalid id / no id provided.' });
+    if (!faturaId || !mongoose.Types.ObjectId.isValid(faturaId))
+      return res.status(400).json({ error: 'Invalid id / No id provided.' });
 
-    const fatura = await actions[method](faturaId, req.userId);
+    let fatura = await actions['GET'](faturaId, req.userId);
 
-    if (!fatura?.name)
-      return res.status(204).json({ error: 'No faturas found.' })
+    if (!fatura?._id)
+      return res.status(400).json({ error: 'No faturas was found with this id.' });
+    
+    fatura = await actions[method](faturaId, req.userId);
 
-    res.status(200).json({ method, fatura, status: 'Success!' });
+    res.status(200).json({ 
+      method: method !== 'GET' ? method : undefined, 
+      fatura: method === 'GET' ? fatura : undefined, 
+      status: method !== 'GET' ? 'Success!' : undefined,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: 
@@ -97,29 +147,45 @@ exports.performById = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 exports.updateFatura = async (req: Request, res: Response, next: NextFunction) => {
-  const { services, paid, name, _id } = req.body;
-  let { totalValue } = req.body;
+  const { paid, name, _id } = req.body;
+  let { validade } = req.body;
+  let services = req.body.services as Array<Servico> || [];
   const method = req.method.toUpperCase();
 
   try {
-    if (!_id || !services || !name || !totalValue) {
-      return res.status(501).json({
-         error: "Couldn't update fatura: missing required values." 
+    const bodyParams = {
+      "faturas's id": _id,
+      "fatura's name": name,
+      'services': services.length,
+      'validade': validade
+    };
+    const result = isThereAnyBodyParamUndefined(bodyParams);
+    if (result.yes)
+      return res.status(400).json({ error: `No ${result.whichOne} provided.` });
+
+    if (areServicesInvalid(services)) {
+      return res.status(400).json({ 
+        error: `Services' objects MUST follow the pattern: { 'name': <string>, 'value': <number> }.`
       });
     }
+    
+    const [ year, month, day ] = validade.split('T')[0].split(/[\/\-]/);
+    if (!year || !month || !day) {
+      return res.status(400).json({
+        error: `Validade MUST follow the pattern: 'yyyy/mm/dd'.`
+      });
+    }
+    validade = new Date(year, month - 1, day);
 
-    const trueServicesValue = services.reduce((acc: number, service: Servico) => {
+    const totalValue = services.reduce((acc: number, service: Servico): number => {
       return acc + service.value;
     }, 0);
 
-    if (trueServicesValue !== totalValue) 
-      totalValue = trueServicesValue;
-
-    const fatura = await actions[method](_id, req.userId, {
-      services, paid, name, totalValue
+    const updatedFatura = await actions[method](_id, req.userId, {
+      services, paid, name, totalValue, validade
     });
 
-    res.status(200).json({ message: 'Success updating fatura!', fatura });
+    res.status(200).json({ updatedFatura });
   } catch (err) {
     console.log(err);
     return res.status(501).json({ error: "Couldn't update fatura." });

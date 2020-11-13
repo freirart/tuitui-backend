@@ -23,6 +23,10 @@ const FaturaSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  validade: {
+    type: Date,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
