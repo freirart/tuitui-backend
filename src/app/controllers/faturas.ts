@@ -3,13 +3,11 @@ const mongoose = require('mongoose');
 
 const Fatura = require('../models/faturas.ts');
 
+const isThereAnyBodyParamUndefined = require('../utils');
+
 interface Servico {
   name: string;
   value: number;
-};
-
-interface ObjectLiteral {
-  [key: string]: any;
 };
 
 const areServicesInvalid = (services: Array<Servico>) => {
@@ -29,7 +27,7 @@ const areServicesInvalid = (services: Array<Servico>) => {
 
 const actions: ObjectLiteral = {
   "GET": (id: string, userId: string): Promise<object> => {
-    return Fatura.findOne({ _id: id, user: userId }).exec();
+    return Fatura.findOne({ _id: id, user: userId }).populate('User').exec();
   },
   "DELETE": (id: string, userId: string): Promise<object> => {
     return Fatura.findOneAndDelete({ _id: id, user: userId }).exec();
@@ -37,18 +35,8 @@ const actions: ObjectLiteral = {
   "PUT": (id: string, userId: string, newValues: Object): Promise<object> => {
     return Fatura.findOneAndUpdate(
         { _id: id, user: userId }, newValues, { new: true }
-    ).exec();
+    ).populate('User').exec();
   }
-};
-
-const isThereAnyBodyParamUndefined = (paramsObject: ObjectLiteral) => {
-  const keys = Object.keys(paramsObject);
-
-  for (const key of keys)
-    if (!paramsObject[key])
-      return { yes: true, whichOne: key };
-
-  return { whichOne: -1, yes: true };
 };
 
 exports.addFatura = async (req: Request, res: Response, next: NextFunction) => {
@@ -103,9 +91,10 @@ exports.fetchByPageNumber = async (req: Request, res: Response, next: NextFuncti
     const listaFaturas = await Fatura.find({ user: req.userId })
                                 .skip(limit * pageNumber)
                                 .limit(limit)
+                                .populate('User')
                                 .exec();
 
-    if (!listaFaturas.length)
+    if (!listaFaturas)
       return res.status(204).json({ message: 'No data found.' });
     
     return res.status(200).json({ listaFaturas });
@@ -129,7 +118,7 @@ exports.performById = async (req: Request, res: Response, next: NextFunction) =>
     if (!fatura?._id)
       return res.status(400).json({ error: 'No faturas was found with this id.' });
     
-    fatura = await actions[method](faturaId, req.userId);
+    fatura = await actions[method](faturaId, req.userId).populate('User');
 
     res.status(200).json({ 
       method: method !== 'GET' ? method : undefined, 
@@ -183,7 +172,7 @@ exports.updateFatura = async (req: Request, res: Response, next: NextFunction) =
 
     const updatedFatura = await actions[method](_id, req.userId, {
       services, paid, name, totalValue, validade
-    });
+    }).populate('User');
 
     res.status(200).json({ updatedFatura });
   } catch (err) {
