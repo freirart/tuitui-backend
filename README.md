@@ -25,6 +25,8 @@ A aplicação consiste em uma __API REST__ desenvolvida em __NodeJS__ com __Type
 * <a href="https://github.com/simonexmachina/factory-girl" target="_blank">Factory-girl</a>
 * <a href="https://github.com/Marak/faker.js" target="_blank">Faker</a>
 
+## Deploy
+
 ## Modo de usar
 
 ## Rotas
