@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 import { NextFunction } from 'express';
 
 const { Schema, model } = require('../../database');
