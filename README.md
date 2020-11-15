@@ -45,13 +45,13 @@ $ npm install // OU yarn install
 ### Testando a aplicação
 Para testar a aplicação é necessário ter o MongoDB instalado em sua máquina.
 
-Para verificar se o tem, rode o seguinte comando:
+Para verificar se o possui, execute o seguinte comando:
 
 ```
 $ mongo --version
 ```
 
-Após isso, execute o comando abaixo para executar a aplicação
+Com o Mongo instalado, rode o comando abaixo para executar a aplicação
 
 ```
 $ npm test
