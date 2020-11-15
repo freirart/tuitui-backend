@@ -1,7 +1,7 @@
+import { Request, Response, NextFunction } from 'express';
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
-const http = require('http');
 const cors = require('cors');
 
 const rotasFaturas = require('./app/routes/faturas');
@@ -20,9 +20,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/users', rotasUsuarios);
 app.use('/faturas', rotasFaturas);
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.status(404).json({ 
+    error: 'Invalid endpoint.',
+    documentation: 'https://www.github.com/freirart/desafio-tecnico-music-playce'
+  });
+});
 
-const port = process.env.PORT || 8080;
-const server = http.createServer(app);
-
-server.listen(port, console.log("Listening on port:", port));
+module.exports = app;
 
