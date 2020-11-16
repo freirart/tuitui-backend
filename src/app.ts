@@ -23,7 +23,7 @@ app.use('/faturas', rotasFaturas);
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({ 
     error: 'Invalid endpoint.',
-    documentation: 'https://www.github.com/freirart/desafio-tecnico-music-playce'
+    documentation: 'https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md'
   });
 });
 
