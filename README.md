@@ -65,7 +65,7 @@ Para consumir os endpoints basta fazer as requições para o endereço onde a ap
 
 > Executar localmente a aplicação com `npm start` ou `npm run dev` é impossível uma vez que se observa a inexistência de variáveis de ambiente que contém informações sigilosas, tais como senhas de acesso ao banco de dados ou segredos de encriptação.
 
-Clique <a href="#docs">aqui</a> para ver os endpoints da aplicação!
+Clique <a href="https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md" id="docs" target="_blank">aqui</a> para ver os endpoints da aplicação!
 
 ## Licença MIT
 Direitos Reservados 2020 Artur Freire
