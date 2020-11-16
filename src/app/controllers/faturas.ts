@@ -35,7 +35,7 @@ const actions: ObjectLiteral = {
   "PUT": (id: string, userId: string, newValues: Object): Promise<object> => {
     return Fatura.findOneAndUpdate(
         { _id: id, user: userId }, newValues, { new: true }
-    ).populate('User').exec();
+    ).exec();
   }
 };
 
@@ -73,7 +73,7 @@ exports.addFatura = async (req: Request, res: Response, next: NextFunction) => {
     }, 0);
 
     const fatura = await Fatura.create({
-       name, services, totalValue, paid, user: req.userId, validade
+      name, services, totalValue, paid, user: req.userId, validade
     });
   
     res.status(201).json({ fatura });
@@ -91,13 +91,12 @@ exports.fetchByPageNumber = async (req: Request, res: Response, next: NextFuncti
     const listaFaturas = await Fatura.find({ user: req.userId })
                                 .skip(limit * pageNumber)
                                 .limit(limit)
-                                .populate('User')
                                 .exec();
 
-    if (!listaFaturas)
+    if (!listaFaturas.length)
       return res.status(204).json({ message: 'No data found.' });
     
-    return res.status(200).json({ listaFaturas });
+    res.status(200).json({ listaFaturas });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Couldn't bring any data." });
@@ -110,15 +109,15 @@ exports.performById = async (req: Request, res: Response, next: NextFunction) =>
   const method = req.method.toUpperCase();
 
   try {
-    if (!faturaId || !mongoose.Types.ObjectId.isValid(faturaId))
-      return res.status(400).json({ error: 'Invalid id / No id provided.' });
+    if (!mongoose.Types.ObjectId.isValid(faturaId))
+      return res.status(400).json({ error: 'Invalid id.' });
 
     let fatura = await actions['GET'](faturaId, req.userId);
 
     if (!fatura?._id)
       return res.status(400).json({ error: 'No faturas was found with this id.' });
     
-    fatura = await actions[method](faturaId, req.userId).populate('User');
+    fatura = await actions[method](faturaId, req.userId);
 
     res.status(200).json({ 
       method: method !== 'GET' ? method : undefined, 
@@ -172,7 +171,7 @@ exports.updateFatura = async (req: Request, res: Response, next: NextFunction) =
 
     const updatedFatura = await actions[method](_id, req.userId, {
       services, paid, name, totalValue, validade
-    }).populate('User');
+    });
 
     res.status(200).json({ updatedFatura });
   } catch (err) {

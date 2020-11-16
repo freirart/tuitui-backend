@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 import { NextFunction } from 'express';
 
 const { Schema, model } = require('../../database');
@@ -28,6 +30,16 @@ UserSchema.pre('save', async function(this: typeof UserSchema, next: NextFunctio
 });
 
 const User = model('User', UserSchema);
+
+User.prototype.generateToken = function () {
+  return jwt.sign({ id: this._id }, process.env.SECRET_KEY, {
+    expiresIn: 86400,
+  });
+}
+
+User.prototype.checkPassword = function(password: string) {
+  return bcrypt.compare(password, this.password);
+}
 
 module.exports = User;
 

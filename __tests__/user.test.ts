@@ -2,7 +2,6 @@ const request = require('supertest');
 const mongoose = require('../src/database');
 const app = require('../src/app');
 const factory = require('./factories');
-const faker = require('faker');
 
 beforeEach(done => {
   mongoose.connection.dropCollection('users', () => {

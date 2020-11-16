@@ -7,7 +7,7 @@ const faturasController = require('../controllers/faturas');
 
 router.use(authMiddleware);
 
-router.get('/pagination/:pageNumber', faturasController.fetchByPageNumber);
+router.get(/\/pagination\/(:pageNumber)?/, faturasController.fetchByPageNumber);
 
 router.post('/', faturasController.addFatura);
 router.put('/', faturasController.updateFatura);
