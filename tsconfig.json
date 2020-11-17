@@ -8,7 +8,9 @@
     "esModuleInterop": true,                  
     "resolveJsonModule": true,
     "experimentalDecorators": true,        
-    "emitDecoratorMetadata": true,         
+    "emitDecoratorMetadata": true,
+    "rootDir" : ".",
+    "outDir": "dist",
     "skipLibCheck": true,                     
     "forceConsistentCasingInFileNames": true  
   },
