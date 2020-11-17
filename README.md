@@ -84,6 +84,7 @@ Com o Mongo instalado, execute o comando abaixo para rodar os testes:
 $ npm test
 ```
 
+Os testes duram, em média, 35 segundos.
 
 ## Licença MIT
 Direitos Reservados 2020 Artur Freire
