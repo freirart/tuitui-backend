@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 const express = require('express');
 const bodyParser = require('body-parser');
-require('dotenv').config();
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'TEST' ? '.env.test' : '.env'
+});
 const cors = require('cors');
 
 const rotasFaturas = require('./app/routes/faturas');
