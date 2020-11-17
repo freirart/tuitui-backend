@@ -63,7 +63,7 @@ O consumo dos endpoins são baseados nas requições enviadas ao endereço onde 
 
 `https://desafio-tecnico-mp.herokuapp.com/`
 
-> Executar localmente a aplicação com `npm start` ou `npm run dev` é impossível uma vez que se observa a inexistência de variáveis de ambiente que contém informações sigilosas, tais como senhas de acesso ao banco de dados ou segredos de encriptação.
+> Executar localmente a aplicação com `npm start` ou `npm run dev` é impossível uma vez que se observa a inexistência de variáveis de ambiente que contêm informações sigilosas, tais como senhas de acesso ao banco de dados ou segredos de encriptação.
 
 Clique <a href="https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md" id="docs" target="_blank">aqui</a> para descobrir os endpoints disponíveis!
 
@@ -84,7 +84,7 @@ Com o Mongo instalado, execute o comando abaixo para rodar os testes:
 $ npm test
 ```
 
-Os testes duram, em média, 35 segundos.
+Os testes duram, em média, 40 segundos.
 
 ## Licença MIT
 Direitos Reservados 2020 Artur Freire
