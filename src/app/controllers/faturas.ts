@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 const mongoose = require('mongoose');
 
-const Fatura = require('../models/faturas.ts');
+const Fatura = require('../models/faturas');
 
 const isThereAnyBodyParamUndefined = require('../utils');
 
