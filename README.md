@@ -39,7 +39,7 @@ A aplicação está disponibilizada gratuitamente pela <a href="https://www.hero
 Para obter o código fonte da aplicação em sua máquina, basta digitar os seguintes comandos no CLI do Git:
 
 ```
-$ git clone https://www.github.com/freirart/desafio-tecnico-music-playce.git/
+$ git clone https://github.com/freirart/desafio-tecnico-music-playce.git/
 $ cd desafio-tecnico-music-playce/
 $ npm install // OU yarn install
 ```
