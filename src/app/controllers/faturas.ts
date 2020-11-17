@@ -52,18 +52,23 @@ exports.addFatura = async (req: Request, res: Response, next: NextFunction) => {
     };
     const result = isThereAnyBodyParamUndefined(bodyParams);
     if (result.yes)
-      return res.status(400).json({ error: `No ${result.whichOne} provided.` });
+      return res.status(400).json({
+        error: `No ${result.whichOne} provided.`,
+        documentation: 'https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md'
+      });
 
     if (areServicesInvalid(services)) {
       return res.status(400).json({ 
-        error: `Services' objects MUST follow the pattern: { 'name': <string>, 'value': <number> }.`
+        error: `Services' objects MUST follow the pattern: { 'name': <string>, 'value': <number> }.`,
+        documentation: 'https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md'
       });
     }
     
     const [ year, month, day ] = validade.split('T')[0].split(/[\/\-]/);
     if (!year || !month || !day) {
       return res.status(400).json({
-        error: `Validade MUST follow the pattern: 'yyyy/mm/dd'.`
+        error: `Validade MUST follow the pattern: 'yyyy/mm/dd'.`,
+        documentation: 'https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md'
       });
     }
     validade = new Date(year, month - 1, day);
@@ -110,12 +115,18 @@ exports.performById = async (req: Request, res: Response, next: NextFunction) =>
 
   try {
     if (!mongoose.Types.ObjectId.isValid(faturaId))
-      return res.status(400).json({ error: 'Invalid id.' });
+      return res.status(400).json({
+        error: 'Invalid id.',
+        documentation: 'https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md'
+      });
 
     let fatura = await actions['GET'](faturaId, req.userId);
 
     if (!fatura?._id)
-      return res.status(400).json({ error: 'No faturas was found with this id.' });
+      return res.status(400).json({
+        error: 'No faturas was found with this id.',
+        documentation: 'https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md'
+      });
     
     fatura = await actions[method](faturaId, req.userId);
 
@@ -149,18 +160,23 @@ exports.updateFatura = async (req: Request, res: Response, next: NextFunction) =
     };
     const result = isThereAnyBodyParamUndefined(bodyParams);
     if (result.yes)
-      return res.status(400).json({ error: `No ${result.whichOne} provided.` });
+      return res.status(400).json({
+        error: `No ${result.whichOne} provided.`,
+        documentation: 'https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md'
+      });
 
     if (areServicesInvalid(services)) {
       return res.status(400).json({ 
-        error: `Services' objects MUST follow the pattern: { 'name': <string>, 'value': <number> }.`
+        error: `Services' objects MUST follow the pattern: { 'name': <string>, 'value': <number> }.`,
+        documentation: 'https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md'
       });
     }
     
     const [ year, month, day ] = validade.split('T')[0].split(/[\/\-]/);
     if (!year || !month || !day) {
       return res.status(400).json({
-        error: `Validade MUST follow the pattern: 'yyyy/mm/dd'.`
+        error: `Validade MUST follow the pattern: 'yyyy/mm/dd'.`,
+        documentation: 'https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md'
       });
     }
     validade = new Date(year, month - 1, day);
