@@ -92,7 +92,7 @@ Um token JWT deve ser informado no cabeçalho da requisição para acessar estas
 ### Atualizando os dados de uma Fatura
 PUT `/faturas/`
 
-As regras da requisição são idênticas às de <a href="cadastrando-uma-fatura">Cadastrando uma Fatura</a>, exceto pela __inclusão do parâmetro _`_id`_ no corpo da requisição__.
+As regras da requisição são idênticas às de <a href="#cadastrando-uma-fatura">Cadastrando uma Fatura</a>, exceto pela __inclusão do parâmetro _`_id`_ no corpo da requisição__.
 
 O corpo da requisição __deve__ seguir o modelo json:
 
