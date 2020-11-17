@@ -31,15 +31,15 @@ A aplicação consiste em uma __API REST__ desenvolvida em __NodeJS__ com __Type
 
 ## Deploy
 
-A aplicação está disponibilizada numa __instância EC2__ da __AWS__ pelo endereço: <br>
+A aplicação está disponibilizada gratuitamente pela <a href="https://www.heroku.com">Heroku</a> no endereço: <br>
 
-`http://localhost:8080/`
+`https://desafio-tecnico-mp.herokuapp.com/`
 
 ## Modo de usar
 Para obter o código fonte da aplicação em sua máquina, basta digitar os seguintes comandos no CLI do Git:
 
 ```
-$ git clone https://www.github.com/freirart/desafio-tecnico-music-playce
+$ git clone https://github.com/freirart/desafio-tecnico-music-playce.git/
 $ cd desafio-tecnico-music-playce/
 $ npm install // OU yarn install
 ```
@@ -53,19 +53,21 @@ Para verificar se o possui, execute o seguinte comando:
 $ mongo --version
 ```
 
-Com o Mongo instalado, rode o comando abaixo para rodar os testes
+Caso não o possua, <a href="https://www.mongodb.com/try/download/community">clique neste link</a> para baixar a versão gratuita (_Community_).
+
+Com o Mongo instalado, execute o comando abaixo para rodar os testes:
 
 ```
 $ npm test
 ```
 ### Consumindo Endpoints
-Para consumir os endpoints basta fazer as requições para o endereço onde a aplicação está disponibilizada: <br>
+O consumo dos endpoins são baseados nas requições enviadas ao endereço onde a aplicação está disponibilizada: <br>
 
-`http://localhost:8080/`
+`https://desafio-tecnico-mp.herokuapp.com/`
 
 > Executar localmente a aplicação com `npm start` ou `npm run dev` é impossível uma vez que se observa a inexistência de variáveis de ambiente que contém informações sigilosas, tais como senhas de acesso ao banco de dados ou segredos de encriptação.
 
-Clique <a href="https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md" id="docs" target="_blank">aqui</a> para ver os endpoints da aplicação!
+Clique <a href="https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md" id="docs" target="_blank">aqui</a> para descobrir os endpoints disponíveis!
 
 ## Licença MIT
 Direitos Reservados 2020 Artur Freire
