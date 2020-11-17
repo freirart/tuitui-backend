@@ -36,7 +36,21 @@ A aplicação está disponibilizada gratuitamente pela <a href="https://www.hero
 `https://desafio-tecnico-mp.herokuapp.com/`
 
 ## Modo de usar
-Para obter o código fonte da aplicação em sua máquina, basta digitar os seguintes comandos no CLI do Git:
+Para obter o código fonte da aplicação em sua máquina, é necessário ter instalado o Node e um gerenciador de pacotes da sua preferência (npm e yarn são os principais atualmente).
+
+Execute o seguinte comando em seu terminal para verificar se já os possui:
+
+```
+$ node -v
+$ npm -v // OU yarn -v
+```
+
+Se uma mensagem de erro aparecer, o node e/ou o gerenciador de pacotes não está(ão) instalado(s). 
+
+* <a href="https://nodejs.org/en/">Clique aqui</a> para baixar a última versão estável do Node (escolher a opção LTS, o npm vem junto).
+* _(opcional)_ <a href="https://classic.yarnpkg.com/en/docs/install/#windows-stable">Clique aqui</a> para baixar o yarn.
+
+Com o gerenciador de pacotes de sua preferência e o Node instalados, basta digitar os seguintes comandos no CLI do Git ou em seu terminal:
 
 ```
 $ git clone https://github.com/freirart/desafio-tecnico-music-playce.git/
@@ -44,10 +58,19 @@ $ cd desafio-tecnico-music-playce/
 $ npm install // OU yarn install
 ```
 
+### Consumindo Endpoints
+O consumo dos endpoins são baseados nas requições enviadas ao endereço onde a aplicação está disponibilizada: <br>
+
+`https://desafio-tecnico-mp.herokuapp.com/`
+
+> Executar localmente a aplicação com `npm start` ou `npm run dev` é impossível uma vez que se observa a inexistência de variáveis de ambiente que contém informações sigilosas, tais como senhas de acesso ao banco de dados ou segredos de encriptação.
+
+Clique <a href="https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md" id="docs" target="_blank">aqui</a> para descobrir os endpoints disponíveis!
+
 ### Testando a aplicação
 Para testar a aplicação é necessário ter o MongoDB instalado em sua máquina.
 
-Para verificar se o possui, execute o seguinte comando:
+Para verificar se o possui, rode o seguinte comando:
 
 ```
 $ mongo --version
@@ -60,14 +83,7 @@ Com o Mongo instalado, execute o comando abaixo para rodar os testes:
 ```
 $ npm test
 ```
-### Consumindo Endpoints
-O consumo dos endpoins são baseados nas requições enviadas ao endereço onde a aplicação está disponibilizada: <br>
 
-`https://desafio-tecnico-mp.herokuapp.com/`
-
-> Executar localmente a aplicação com `npm start` ou `npm run dev` é impossível uma vez que se observa a inexistência de variáveis de ambiente que contém informações sigilosas, tais como senhas de acesso ao banco de dados ou segredos de encriptação.
-
-Clique <a href="https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md" id="docs" target="_blank">aqui</a> para descobrir os endpoints disponíveis!
 
 ## Licença MIT
 Direitos Reservados 2020 Artur Freire
