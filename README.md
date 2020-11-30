@@ -29,11 +29,15 @@ A aplicação consiste em uma __API REST__ desenvolvida em __NodeJS__ com __Type
 * <a href="https://github.com/simonexmachina/factory-girl" target="_blank">Factory-girl</a>
 * <a href="https://github.com/Marak/faker.js" target="_blank">Faker</a>
 
-## Deploy
+<h2 id="deploy"> Deploy </h2>
 
 A aplicação está disponibilizada gratuitamente pela <a href="https://www.heroku.com">Heroku</a> no endereço: <br>
 
 `https://desafio-tecnico-mp.herokuapp.com/`
+
+Por ser uma hospedagem gratuita, passado um tempo sem receber requisições a aplicação entra em estado de _"hibernação"_, demorando mais que o comum para responder na __primeira__ requisição somente. 
+
+Certifique-se que a aplicação esteja _"acordada"_ antes de rodar testes ou consumir endpoints.
 
 ## Modo de usar
 Para obter o código fonte da aplicação em sua máquina, é necessário ter instalado o Node e um gerenciador de pacotes da sua preferência (npm e yarn são os principais atualmente).
@@ -78,13 +82,15 @@ $ mongo --version
 
 Caso não o possua, <a href="https://www.mongodb.com/try/download/community">clique neste link</a> para baixar a versão gratuita (_Community_).
 
-Com o Mongo instalado, execute o comando abaixo para rodar os testes:
+Com o Mongo instalado, execute o comando abaixo no diretorio raiz para rodar os testes:
 
 ```
 $ npm test
 ```
 
 Os testes duram, em média, 40 segundos.
+
+> Certifique-se que a aplicação não está _"hibernando"_ como foi mencionado na seção <a href="#deploy">Deploy</a>.
 
 ## Licença MIT
 Direitos Reservados 2020 Artur Freire
