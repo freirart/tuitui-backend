@@ -90,7 +90,7 @@ $ npm test
 
 Os testes duram, em média, 40 segundos.
 
-> Certifique-se que a aplicação não está _"hibernando"_ como foi mencionado na seção <a href="#deploy">Deploy</a>.
+> Certifique-se de que a aplicação não está _"hibernando"_ como foi mencionado na seção <a href="#deploy">Deploy</a>.
 
 ## Licença MIT
 Direitos Reservados 2020 Artur Freire
