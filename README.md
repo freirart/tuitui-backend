@@ -8,7 +8,7 @@
 TL;DR: <a href="https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md" id="docs" target="_blank"> API Documentation </a>
 
 ## Proposta
-Desafio técnico proposto pela <a href="http://www.musicplayce.com" target="_blank">MusicPlayce</a> _- plataforma brasileira para publicação de músicas e composições inéditas fundada em 2018 -_ cuja proposta era construir uma API REST de controle financeiro que detivesse de um sistema de autorização baseado em _token_.
+Desafio técnico proposto pela <a href="http://www.musicplayce.com" target="_blank">MusicPlayce</a> _- plataforma brasileira para publicação de músicas e composições inéditas fundada em 2018 -_ cuja proposta era desenvolver uma solução de controle financeiro que detivesse de um sistema de autorização baseado em _token_.
 
 A aplicação consiste em uma __API REST__ desenvolvida em __NodeJS__ com __Typescript__. Utiliza-se do Banco Não Relacional __MongoDB__ e seu método de autorização é baseado no __JWT__ (_JSON Web Token_).
 
@@ -35,12 +35,12 @@ A aplicação está disponibilizada gratuitamente pela <a href="https://www.hero
 
 `https://desafio-tecnico-mp.herokuapp.com/`
 
-Por ser uma hospedagem gratuita, passado um tempo sem receber requisições a aplicação entra em estado de _"hibernação"_, demorando mais que o comum para responder na __primeira__ requisição somente. 
+Por ser uma hospedagem gratuita, passado um tempo sem receber requisições a aplicação entra em estado de _"hibernação"_, demorando mais que o comum para responder (_na __primeira__ requisição somente_). 
 
-Certifique-se que a aplicação esteja _"acordada"_ antes de rodar testes ou consumir endpoints.
+Certifique-se que a aplicação esteja _"acordada"_ antes de rodar testes ou consumir endpoints acessando o endereço acima. Você deverá receber um JSON contendo um erro informando que o endpoint em questão é inválido e o link para a documentação oficial da aplicação.
 
 ## Modo de usar
-Para obter o código fonte da aplicação em sua máquina, é necessário ter instalado o Node e um gerenciador de pacotes da sua preferência (npm e yarn são os principais atualmente).
+Para obter o código fonte da aplicação em sua máquina é necessário ter instalado o Node e um gerenciador de pacotes da sua preferência (_npm e yarn são os principais atualmente_).
 
 Execute o seguinte comando em seu terminal para verificar se já os possui:
 
