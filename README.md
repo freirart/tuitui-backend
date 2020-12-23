@@ -37,7 +37,7 @@ A aplicação está disponibilizada gratuitamente pela <a href="https://www.hero
 
 Por ser uma hospedagem gratuita, passado um tempo sem receber requisições a aplicação entra em estado de _"hibernação"_, demorando mais que o comum para responder (_na __primeira__ requisição somente_). 
 
-Certifique-se que a aplicação esteja _"acordada"_ antes de rodar testes ou consumir endpoints acessando o endereço acima. Você deverá receber um JSON contendo um erro informando que o endpoint em questão é inválido e o link para a documentação oficial da aplicação.
+Certifique-se que a aplicação esteja _"acordada"_ antes de rodar testes ou consumir endpoints acessando o endereço acima. Ao acessar, você deverá receber um JSON contendo um erro informando que o endpoint em questão é inválido e o link para a documentação oficial da aplicação.
 
 ## Modo de usar
 Para obter o código fonte da aplicação em sua máquina é necessário ter instalado o Node e um gerenciador de pacotes da sua preferência (_npm e yarn são os principais atualmente_).
