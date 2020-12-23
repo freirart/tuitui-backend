@@ -82,6 +82,8 @@ $ mongo --version
 
 Caso não o possua, <a href="https://www.mongodb.com/try/download/community">clique neste link</a> para baixar a versão gratuita (_Community_).
 
+Se estiver enfrentando problemas ao executar o comando `mongo --version` no Sistema Operacional Windows, verifique <a href="https://netovieiraleo.medium.com/instalando-e-configurando-o-mongodb-no-windows-b1d4e1e58911">este</a> tutorial! 
+
 Com o Mongo instalado, execute o comando abaixo no diretorio raiz para rodar os testes:
 
 ```
