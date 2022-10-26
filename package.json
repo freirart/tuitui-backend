@@ -1,7 +1,7 @@
 {
-  "name": "desafio-tecnico-music-playce",
+  "name": "tuitui-backend",
   "version": "1.0.0",
-  "description": "REST API para CRUD de Faturas",
+  "description": "REST API para o backend do Tuitui",
   "main": "src/server.ts",
   "engines": { "node": "12.18.3" },
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/freirart/desafio-tecnico-music-playce.git"
+    "url": "git+https://github.com/freirart/tuitui-backend.git"
   },
   "keywords": [
     "typescript",
@@ -27,9 +27,9 @@
   "author": "Artur Freire dos Santos",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/freirart/desafio-tecnico-music-playce/issues"
+    "url": "https://github.com/freirart/tuitui-backend/issues"
   },
-  "homepage": "https://github.com/freirart/desafio-tecnico-music-playce#readme",
+  "homepage": "https://github.com/freirart/tuitui-backend#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",

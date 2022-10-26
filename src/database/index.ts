@@ -1,7 +1,9 @@
 const mongoose = require('mongoose'); 
-const connectString = process.env.NODE_ENV === 'TEST'
-                    ? `mongodb://localhost/${Date.now()}`
-                    : process.env.MONGODB_URI
+const connectString = (
+  process.env.NODE_ENV === 'TEST'
+  ? `mongodb://localhost/${Date.now()}`
+  : process.env.MONGODB_URI
+)
 
 mongoose.connect(connectString, 
 {
