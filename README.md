@@ -1,11 +1,6 @@
 <h1 align="center">
 	REST API - Tuitui Backend<br/>
-	<a href="http://www.musicplayce.com" target="_blank">
-		<img src="https://raw.githubusercontent.com/freirart/desafio-tecnico-music-playce/main/public/readme-caption-image.gif" width="400" />
-	</a>
 </h1>
-
-TL;DR: <a href="https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md" id="docs" target="_blank"> API Documentation </a>
 
 ## Proposta
 
