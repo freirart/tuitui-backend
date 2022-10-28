@@ -1,4 +1,4 @@
-const { Schema, model } = require('../../database');
+const { Schema, model } = require("../../database");
 
 const FaturaSchema = new Schema({
   name: {
@@ -7,13 +7,15 @@ const FaturaSchema = new Schema({
   },
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
-  services: [{
-    type: Object,
-    required: true,
-  }],
+  services: [
+    {
+      type: Object,
+      required: true,
+    },
+  ],
   totalValue: {
     type: Number,
     required: true,
@@ -32,8 +34,8 @@ const FaturaSchema = new Schema({
   },
 });
 
-const Fatura = model('Fatura', FaturaSchema);
+const Fatura = model("Fatura", FaturaSchema);
 
 module.exports = Fatura;
 
-export {}
+export {};

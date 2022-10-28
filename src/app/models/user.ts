@@ -9,19 +9,19 @@ const UserSchema = new Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
     required: true,
-    select: false
+    select: false,
   },
   description: {
-    type: String
+    type: String,
   },
   userEmail: {
     type: String,
-    required: true
+    required: true,
   },
   createdAt: {
     type: Date,
@@ -29,12 +29,15 @@ const UserSchema = new Schema({
   },
 });
 
-UserSchema.pre("save", async function(this: typeof UserSchema, next: NextFunction) {
-  const hash = await bcrypt.hash(this.password, 10);
-  this.password = hash;
-  
-  next();
-});
+UserSchema.pre(
+  "save",
+  async function (this: typeof UserSchema, next: NextFunction) {
+    const hash = await bcrypt.hash(this.password, 10);
+    this.password = hash;
+
+    next();
+  }
+);
 
 const User = model("User", UserSchema);
 
@@ -44,7 +47,7 @@ User.prototype.generateToken = function () {
   });
 };
 
-User.prototype.checkPassword = function(password: string) {
+User.prototype.checkPassword = function (password: string) {
   return bcrypt.compare(password, this.password);
 };
 
