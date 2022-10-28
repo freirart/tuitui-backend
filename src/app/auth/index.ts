@@ -9,19 +9,24 @@ const User = require("../models/user");
 
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ error: "No token provided." });
+  if (!authHeader) {
+    return res.status(401).json({ error: "No token provided." });
+  }
 
   const parts = authHeader.split(" ");
-  if (parts.length !== 2)
+  if (parts.length !== 2) {
     return res
       .status(401)
       .json({ error: "Invalid token: unknown token format." });
+  }
 
   const [scheme, token] = parts;
-  if (!/^Bearer$/i.test(scheme))
+
+  if (!/^Bearer$/i.test(scheme)) {
     return res
       .status(401)
       .json({ error: "Invalid token: no 'Bearer' provided." });
+  }
 
   jwt.verify(
     token,

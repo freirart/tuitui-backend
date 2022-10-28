@@ -1,63 +1,71 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
+
+const { PROJECT_DOC } = process.env;
 
 const User = require("../models/user");
 
 const isThereAnyBodyParamUndefined = require("../utils");
 
-exports.signUp = async (req: Request, res: Response, next: NextFunction) => {
+exports.signUp = async (req: Request, res: Response) => {
   const { username, password, description, userEmail } = req.body;
 
   try {
-    const result = isThereAnyBodyParamUndefined({ username, password });
+    const result = isThereAnyBodyParamUndefined({
+      username,
+      password,
+      description,
+      userEmail,
+    });
+
     if (result.yes) {
       return res.status(400).json({
         error: `No ${result.whichOne} provided.`,
-        documentation: "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md"
+        documentation: PROJECT_DOC
       });
     }
 
-    const isExistingUser = await User.findOne({ username }).exec();
+    const isExistingUser = await User.findOne({ userEmail }).exec();
 
     if (isExistingUser) {
-      return res.status(501).json({
+      return res.status(400).json({
         error: "User already exists.",
-        documentation: "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md"
+        documentation: PROJECT_DOC
       });
     }
 
-    const user = await User.create({ username, password });
+    const user = await User.create({ username, password, description, userEmail });
 
     req.userId = user._id;
     user.password = undefined;
     res.status(201).json({ user, token: user.generateToken(req.userId) });
   } catch (err) {
     console.log(err);
-    res.status(501).json({ error: "Registration failed." });
+    res.status(500).json({ error: "Registration failed." });
   }
 };
 
-exports.signIn = async (req: Request, res: Response, next: NextFunction) => {
+exports.signIn = async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   try {
     const result = isThereAnyBodyParamUndefined({ username, password });
-    if (result.yes) 
+    if (result.yes)
       return res.status(400).json({
         error: `No ${result.whichOne} provided.`,
-        documentation: "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md"
+        documentation: PROJECT_DOC
       });
 
     const user = await User.findOne({ username }).select("+password");
     if (!user)
       return res.status(401).json({
         error: "User does not exist.",
-        documentation: "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md"
+        documentation: PROJECT_DOC
       });
 
     if (!(await user.checkPassword(password)))
-      return res.status(401).json({ 
+      return res.status(401).json({
         error: "Wrong password.",
-        documentation: "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md"
+        documentation: PROJECT_DOC
       });
 
     req.userId = user._id;

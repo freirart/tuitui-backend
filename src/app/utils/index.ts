@@ -1,12 +1,21 @@
-interface ObjectLiteral {
-  [key: string]: any;
+interface emptyKeyObj {
+  yes: boolean;
+  whichOne: string | number
 }
 
-module.exports = (paramsObject: ObjectLiteral) => {
+const isThereAnyBodyParamUndefined = (paramsObject: object) => {
   const keys = Object.keys(paramsObject);
+  const defaultObj = { whichOne: -1, yes: false } as emptyKeyObj;
 
-  for (const key of keys)
-    if (!paramsObject[key]) return { yes: true, whichOne: key };
+  for (const key of keys) {
+    if (!paramsObject[key]) {
+      defaultObj.yes = true;
+      defaultObj.whichOne = key;
+      break;
+    }
+  }
 
-  return { whichOne: -1, yes: false };
+  return defaultObj;
 };
+
+module.exports = isThereAnyBodyParamUndefined;
