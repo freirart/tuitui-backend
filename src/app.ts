@@ -6,7 +6,7 @@ require("dotenv").config({
 });
 const cors = require("cors");
 
-const rotasFaturas = require("./app/routes/faturas");
+
 const rotasUsuarios = require("./app/routes/users");
 
 const corsConfig = require("./config/cors");
@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/users", rotasUsuarios);
-app.use("/faturas", rotasFaturas);
+
 app.use((req: Request, res: Response) => {
   res.status(404).json({ 
     error: "Invalid endpoint.",
