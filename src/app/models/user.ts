@@ -43,6 +43,6 @@ export const User = typedModel(
   UserSchema,
   undefined,
   undefined,
-  undefined,
+  {},
   connection
 );
