@@ -43,7 +43,7 @@ export const signUp = async (req: Request, res: Response) => {
 
     req.userId = user._id;
 
-    const createdUser = { ...user._doc };
+    const createdUser = { ...user };
     delete createdUser.password;
 
     res.status(201).json({ user: createdUser, token: user.generateToken() });
