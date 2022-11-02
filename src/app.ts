@@ -7,7 +7,7 @@ require("dotenv").config({
 const cors = require("cors");
 
 
-const rotasUsuarios = require("./app/routes/users");
+const usersRoutes = require("./app/routes/users");
 
 const corsConfig = require("./config/cors");
 
@@ -20,7 +20,7 @@ app.use(corsConfig);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/users", rotasUsuarios);
+app.use("/users", usersRoutes);
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({ 

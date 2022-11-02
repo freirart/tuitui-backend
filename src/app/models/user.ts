@@ -1,56 +1,48 @@
 import { NextFunction } from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { createSchema, Type, typedModel, ExtractDoc } from "ts-mongoose";
+import connection from "../../database";
 
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
-const { Schema, model } = require("../../database");
-
-const UserSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-    select: false,
-  },
-  description: {
-    type: String,
-  },
-  userEmail: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
+const UserSchema = createSchema({
+  username: Type.string({ required: true }),
+  password: Type.string({ required: true, select: false }),
+  description: Type.string(),
+  userEmail: Type.string({ required: true, unique: true }),
+  createdAt: Type.date({ default: Date.now() }),
+  ...({} as {
+    generateToken: () => string;
+    checkPassword: (password: string) => Promise<boolean>;
+  }),
 });
 
-UserSchema.pre(
-  "save",
-  async function (this: typeof UserSchema, next: NextFunction) {
-    const hash = await bcrypt.hash(this.password, 10);
-    this.password = hash;
+type UserDoc = ExtractDoc<typeof UserSchema>;
 
-    next();
-  }
-);
+UserSchema.pre("save", async function (this: UserDoc, next: NextFunction) {
+  const hash = await bcrypt.hash(this.password, 10);
+  this.password = hash;
 
-const User = model("User", UserSchema);
+  next();
+});
 
-User.prototype.generateToken = function () {
+UserSchema.methods.generateToken = function generateToken(this: UserDoc) {
   return jwt.sign({ id: this._id }, process.env.SECRET_KEY, {
     expiresIn: 86400,
   });
 };
 
-User.prototype.checkPassword = function (password: string) {
+UserSchema.methods.checkPassword = function checkPassword(
+  this: UserDoc,
+  password: string
+) {
   return bcrypt.compare(password, this.password);
 };
 
-module.exports = User;
-
-export {};
+export const User = typedModel(
+  "User",
+  UserSchema,
+  undefined,
+  undefined,
+  undefined,
+  connection
+);

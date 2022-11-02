@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 interface User {
   id?: string;
@@ -33,8 +33,9 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
     process.env.SECRET_KEY as jwt.Secret,
     async (err, decoded?: User) => {
       const user = await User.findById(decoded?.id).exec();
-      if (!user || err)
+      if (!user || err) {
         return res.status(401).json({ error: "Invalid token." });
+      }
 
       req.userId = user._id;
       next();
