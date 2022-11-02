@@ -1,16 +1,15 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
 const connectString =
   process.env.NODE_ENV === "TEST"
     ? `mongodb://localhost/${Date.now()}`
     : process.env.MONGODB_URI;
 
-mongoose.connect(connectString, {
+const conn = mongoose.createConnection(connectString, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
 });
 
-module.exports = mongoose;
-
-export {};
+export default conn;
