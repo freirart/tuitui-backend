@@ -9,7 +9,6 @@
   "scripts": {
     "start": "node dist/src/server.js",
     "dev": "tsnd --transpile-only --ignore-watch node_modules --respawn src/server.ts",
-    "test": "NODE_ENV=TEST jest",
     "postinstall": "tsc",
     "watch-node": "tsnd --transpile-only --ignore-watch node_modules --respawn src/server.ts",
     "watch-ts": "tsc -w"
