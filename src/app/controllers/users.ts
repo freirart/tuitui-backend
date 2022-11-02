@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User } from "../models/user";
+import User from "../models/user";
 
 const { PROJECT_DOC } = process.env;
 
@@ -32,7 +32,7 @@ export const signUp = async (req: Request, res: Response) => {
       });
     }
 
-    const user = new User({
+    const user = await User.create({
       username,
       password,
       description,
@@ -43,7 +43,7 @@ export const signUp = async (req: Request, res: Response) => {
 
     req.userId = user._id;
 
-    const createdUser = { ...user._doc };
+    const createdUser = { ...user.toObject() };
     delete createdUser.password;
 
     res.status(201).json({ user: createdUser, token: user.generateToken() });
