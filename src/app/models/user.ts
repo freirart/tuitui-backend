@@ -1,12 +1,9 @@
-import { NextFunction } from "express";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import {
-  getModelForClass,
-  prop,
-  DocumentType,
-  pre,
+  DocumentType, getModelForClass, pre, prop
 } from "@typegoose/typegoose";
+import bcrypt from "bcrypt";
+import { NextFunction } from "express";
+import jwt from "jsonwebtoken";
 import connection from "../../database";
 
 @pre<UserClass>(
@@ -18,7 +15,7 @@ import connection from "../../database";
     next();
   }
 )
-class UserClass {
+export class UserClass {
   @prop({ required: true })
   public username!: string;
 
