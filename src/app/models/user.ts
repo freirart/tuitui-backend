@@ -1,48 +1,62 @@
 import { NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { createSchema, Type, typedModel, ExtractDoc } from "ts-mongoose";
+import {
+  getModelForClass,
+  prop,
+  DocumentType,
+  pre,
+} from "@typegoose/typegoose";
 import connection from "../../database";
 
-const UserSchema = createSchema({
-  username: Type.string({ required: true }),
-  password: Type.string({ required: true, select: false }),
-  description: Type.string(),
-  userEmail: Type.string({ required: true, unique: true }),
-  createdAt: Type.date({ default: Date.now() }),
-  ...({} as {
-    generateToken: () => string;
-    checkPassword: (password: string) => Promise<boolean>;
-  }),
+@pre<UserClass>(
+  "save",
+  async function (this: DocumentType<UserClass>, next: NextFunction) {
+    const hash = await bcrypt.hash(this.password, 10);
+    this.password = hash;
+
+    next();
+  }
+)
+class UserClass {
+  @prop({ required: true })
+  public username!: string;
+
+  @prop({ required: true, select: false })
+  public password!: string;
+
+  @prop()
+  public description?: string;
+
+  @prop({ required: true, unique: true })
+  public userEmail!: string;
+
+  @prop({ required: true, default: Date.now() })
+  public createdAt!: Date;
+
+  public generateToken(this: DocumentType<UserClass>) {
+    return jwt.sign({ id: this._id }, process.env.SECRET_KEY, {
+      expiresIn: 86400,
+    });
+  }
+
+  public async checkPassword(this: DocumentType<UserClass>, password: string) {
+    return await bcrypt.compare(password, this.password);
+  }
+
+  public getDocument(this: DocumentType<UserClass>) {
+    const userDocument = { ...this.toJSON() };
+
+    delete userDocument.password;
+    delete userDocument["__v"];
+
+    return userDocument;
+  }
+}
+
+const UserModel = getModelForClass(UserClass, {
+  existingConnection: connection,
+  options: { customName: "users" },
 });
 
-type UserDoc = ExtractDoc<typeof UserSchema>;
-
-UserSchema.pre("save", async function (this: UserDoc, next: NextFunction) {
-  const hash = await bcrypt.hash(this.password, 10);
-  this.password = hash;
-
-  next();
-});
-
-UserSchema.methods.generateToken = function generateToken(this: UserDoc) {
-  return jwt.sign({ id: this._id }, process.env.SECRET_KEY, {
-    expiresIn: 86400,
-  });
-};
-
-UserSchema.methods.checkPassword = function checkPassword(
-  this: UserDoc,
-  password: string
-) {
-  return bcrypt.compare(password, this.password);
-};
-
-export const User = typedModel(
-  "User",
-  UserSchema,
-  undefined,
-  undefined,
-  {},
-  connection
-);
+export default UserModel;

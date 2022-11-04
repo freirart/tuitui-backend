@@ -5,11 +5,6 @@ const connectString =
     ? `mongodb://localhost/${Date.now()}`
     : process.env.MONGODB_URI;
 
-const conn = mongoose.createConnection(connectString, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-});
+const conn = mongoose.createConnection(connectString);
 
 export default conn;
