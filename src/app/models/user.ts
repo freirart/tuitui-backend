@@ -40,8 +40,17 @@ class UserClass {
     });
   }
 
-  public checkPassword(this: DocumentType<UserClass>, password: string) {
-    return bcrypt.compare(password, this.password);
+  public async checkPassword(this: DocumentType<UserClass>, password: string) {
+    return await bcrypt.compare(password, this.password);
+  }
+
+  public getDocument(this: DocumentType<UserClass>) {
+    const userDocument = { ...this.toJSON() };
+
+    delete userDocument.password;
+    delete userDocument["__v"];
+
+    return userDocument;
   }
 }
 
