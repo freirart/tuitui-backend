@@ -1,56 +1,62 @@
 import { NextFunction } from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import {
+  getModelForClass,
+  prop,
+  DocumentType,
+  pre,
+} from "@typegoose/typegoose";
+import connection from "../../database";
 
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
-const { Schema, model } = require("../../database");
-
-const UserSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-    select: false,
-  },
-  description: {
-    type: String,
-  },
-  userEmail: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
-});
-
-UserSchema.pre(
+@pre<UserClass>(
   "save",
-  async function (this: typeof UserSchema, next: NextFunction) {
+  async function (this: DocumentType<UserClass>, next: NextFunction) {
     const hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
 
     next();
   }
-);
+)
+class UserClass {
+  @prop({ required: true })
+  public username!: string;
 
-const User = model("User", UserSchema);
+  @prop({ required: true, select: false })
+  public password!: string;
 
-User.prototype.generateToken = function () {
-  return jwt.sign({ id: this._id }, process.env.SECRET_KEY, {
-    expiresIn: 86400,
-  });
-};
+  @prop()
+  public description?: string;
 
-User.prototype.checkPassword = function (password: string) {
-  return bcrypt.compare(password, this.password);
-};
+  @prop({ required: true, unique: true })
+  public userEmail!: string;
 
-module.exports = User;
+  @prop({ required: true, default: Date.now() })
+  public createdAt!: Date;
 
-export {};
+  public generateToken(this: DocumentType<UserClass>) {
+    return jwt.sign({ id: this._id }, process.env.SECRET_KEY, {
+      expiresIn: 86400,
+    });
+  }
+
+  public async checkPassword(this: DocumentType<UserClass>, password: string) {
+    return await bcrypt.compare(password, this.password);
+  }
+
+  public getDocument(this: DocumentType<UserClass>) {
+    const userDocument = { ...this.toJSON() };
+
+    delete userDocument.password;
+    delete userDocument["__v"];
+
+    return userDocument;
+  }
+}
+
+const UserModel = getModelForClass(UserClass, {
+  existingConnection: connection,
+  options: { customName: "users" },
+});
+
+export default UserModel;
