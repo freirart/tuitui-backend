@@ -1,13 +1,11 @@
-import { Request, Response } from "express";
-const express = require("express");
-const bodyParser = require("body-parser");
 require("dotenv").config({
   path: process.env.NODE_ENV === "TEST" ? ".env.test" : ".env"
 });
-const cors = require("cors");
 
-
-const usersRoutes = require("./app/routes/users");
+import { json, urlencoded } from "body-parser";
+import cors from "cors";
+import express, { Request, Response } from "express";
+import usersRoutes from "./app/routes/users";
 
 const corsConfig = require("./config/cors");
 
@@ -17,8 +15,8 @@ app.use(cors());
 app.options("*", cors());
 app.use(corsConfig);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(json());
+app.use(urlencoded({ extended: true }));
 
 app.use("/users", usersRoutes);
 
