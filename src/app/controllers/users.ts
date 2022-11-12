@@ -49,6 +49,8 @@ export const signUp = async (req: Request, res: Response) => {
     console.log(err);
     res.status(500).json({ error: "Registration failed." });
   }
+
+  return res;
 };
 
 export const signIn = async (req: Request, res: Response) => {
@@ -87,4 +89,6 @@ export const signIn = async (req: Request, res: Response) => {
     console.log(err);
     res.status(500).json({ error: "Couldn't sign in." });
   }
+
+  return res;
 };
