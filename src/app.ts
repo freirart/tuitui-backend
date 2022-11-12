@@ -1,13 +1,12 @@
-import { Request, Response } from "express";
-const express = require("express");
-const bodyParser = require("body-parser");
 require("dotenv").config({
-  path: process.env.NODE_ENV === "TEST" ? ".env.test" : ".env"
+  path: process.env.NODE_ENV === "TEST" ? ".env.test" : ".env",
 });
-const cors = require("cors");
 
+import express, { Request, Response } from "express";
+import cors from "cors";
 
-const usersRoutes = require("./app/routes/users");
+import usersRoutes from "./app/routes/users";
+import tagsRoutes from "./app/routes/tags";
 
 const corsConfig = require("./config/cors");
 
@@ -17,17 +16,18 @@ app.use(cors());
 app.options("*", cors());
 app.use(corsConfig);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/users", usersRoutes);
+app.use("/tags", tagsRoutes);
 
 app.use((req: Request, res: Response) => {
-  res.status(404).json({ 
+  res.status(404).json({
     error: "Invalid endpoint.",
-    documentation: "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md"
+    documentation:
+      "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md",
   });
 });
 
-module.exports = app;
-
+export default app;
