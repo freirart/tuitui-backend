@@ -3,7 +3,7 @@ import * as tagsController from "../controllers/tags";
 
 const router = Router();
 
-router.get("/tag", tagsController.search);
-router.post("/tag", tagsController.create);
+router.get("/", tagsController.search);
+router.post("/", tagsController.create);
 
-module.exports = router;
+export default router;
