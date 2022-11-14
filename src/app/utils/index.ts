@@ -1,9 +1,9 @@
 interface emptyKeyObj {
   yes: boolean;
-  whichOne: string | number
+  whichOne: string | number;
 }
 
-const isThereAnyBodyParamUndefined = (paramsObject: object) => {
+export const isThereAnyBodyParamUndefined = (paramsObject: object) => {
   const keys = Object.keys(paramsObject);
   const defaultObj = { whichOne: -1, yes: false } as emptyKeyObj;
 
@@ -17,5 +17,3 @@ const isThereAnyBodyParamUndefined = (paramsObject: object) => {
 
   return defaultObj;
 };
-
-module.exports = isThereAnyBodyParamUndefined;
