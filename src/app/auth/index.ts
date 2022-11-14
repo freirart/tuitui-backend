@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-import UserModel from "../models/user";
+import { UserModel } from "../models/user";
 
 export const validateToken = (
   req: Request,
