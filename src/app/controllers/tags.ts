@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { TagModel } from "../models/tag";
 
-import { isThereAnyBodyParamUndefined } from "../utils/index";
+import { isThereAnyBodyParamUndefined, isFilledArray } from "../utils/index";
 
 const { PROJECT_DOC } = process.env;
 
@@ -21,11 +21,12 @@ export async function create(request: Request, response: Response) {
       });
     }
 
-    const isTagAlreadyCreated = await TagModel.getTagBasedOnItsName(
-      tagName as string
+    const existingTags = await TagModel.getTagBasedOnItsName(
+      tagName as string,
+      true
     );
 
-    if (isTagAlreadyCreated) {
+    if (isFilledArray(existingTags)) {
       return response.status(400).json({
         error: "Tag is already created",
         documentation: PROJECT_DOC,

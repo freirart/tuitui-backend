@@ -17,3 +17,5 @@ export const isThereAnyBodyParamUndefined = (paramsObject: object) => {
 
   return defaultObj;
 };
+
+export const isFilledArray = (val: any) => Array.isArray(val) && !!val.length;

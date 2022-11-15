@@ -26,11 +26,12 @@ export class TagClass {
 
   public static async getTagBasedOnItsName(
     this: ReturnModelType<typeof TagClass>,
-    tagName: string
+    tagName: string,
+    shouldBeExact = false
   ) {
     const filter = tagName
       ? {
-        tagName: { $regex: new RegExp(tagName, "i") },
+        tagName: { $regex: new RegExp(tagName, shouldBeExact ? "i" : "gi") },
       }
       : {};
 
