@@ -55,11 +55,11 @@ export const remove = async (req: Request, res: Response) => {
         documentation: PROJECT_DOC,
       });
     }
-    
+
     if (!Types.ObjectId.isValid(articleId as string)) {
       return res.status(400).json({ message: "Invalid article id" });
     }
-    
+
     const existingArticle = await ArticleModel.findById(articleId);
 
     let defaultErrorMessage = "Can't delete this article";
@@ -77,6 +77,51 @@ export const remove = async (req: Request, res: Response) => {
         } else {
           defaultErrorMessage += ": article already deleted!";
           res.status(401);
+        }
+      } else {
+        res.status(403);
+      }
+    } else {
+      res.status(401);
+    }
+
+    return res.json({ message: defaultErrorMessage });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
+export const edit = async (req: Request, res: Response) => {
+  const { articleId } = req.body;
+  const { userId } = req;
+
+  try {
+    if (!Types.ObjectId.isValid(articleId as string)) {
+      return res.status(400).json({ message: "Invalid article id" });
+    }
+
+    const existingArticle = await ArticleModel.findById(articleId);
+
+    let defaultErrorMessage = "Can't delete this article";
+
+    if (existingArticle) {
+      const formattedUserId = String(userId);
+      const articleAuthorId = existingArticle.author.toString();
+
+      if (formattedUserId === articleAuthorId) {
+        if (!existingArticle.isDeleted) {
+          for (const key of Object.keys(req.body)) {
+            if (key in existingArticle && !Types.ObjectId.isValid(existingArticle[key])) {
+              existingArticle[key] = req.body[key];
+            }
+          }
+  
+          const updatedArticle = await existingArticle.save();
+          return res.status(200).json({ updatedArticle });
+        } else {
+          defaultErrorMessage += ": article deleted!";
+          res.status(403);  
         }
       } else {
         res.status(403);

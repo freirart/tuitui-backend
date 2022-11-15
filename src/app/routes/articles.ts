@@ -10,6 +10,7 @@ router.use(validateToken);
 
 router.post("/", articlesController.create);
 router.delete("/", articlesController.remove);
+router.put("/", articlesController.edit);
 // router.post("/", articlesController.search);
 
 export default router;
