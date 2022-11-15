@@ -13,11 +13,13 @@ import connection from "../../database";
 @pre<UserClass>(
   "save",
   async function (this: DocumentType<UserClass>, next: NextFunction) {
-    try {
-      bcrypt.getRounds(this.password);
-    } catch (err) {
-      const hash = await bcrypt.hash(this.password, 10);
-      this.password = hash;
+    if (this.password) {
+      try {
+        bcrypt.getRounds(this.password);
+      } catch (err) {
+        const hash = await bcrypt.hash(this.password, 10);
+        this.password = hash;
+      }
     }
 
     next();
@@ -38,6 +40,9 @@ export class UserClass {
 
   @prop({ required: true, default: Date.now() })
   public createdAt!: Date;
+
+  @prop({ default: false })
+  public isDeleted?: boolean;
 
   public generateToken(this: DocumentType<UserClass>) {
     return jwt.sign({ id: this._id }, process.env.SECRET_KEY, {

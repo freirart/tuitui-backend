@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
+
 import { UserModel } from "../models/user";
 
-const { PROJECT_DOC } = process.env;
-
 import { isThereAnyBodyParamUndefined } from "../utils";
+
+const { PROJECT_DOC } = process.env;
 
 export const signUp = async (req: Request, res: Response) => {
   const { username, password, description, userEmail } = req.body;
@@ -91,4 +92,24 @@ export const signIn = async (req: Request, res: Response) => {
   }
 
   return res;
+};
+
+export const remove = async (req: Request, res: Response) => {
+  const { userId } = req;
+
+  try {
+    const existingUser = await UserModel.findById(userId);
+
+    if (existingUser && !existingUser.isDeleted) {
+      existingUser.isDeleted = true;
+      existingUser.save();
+
+      return res.status(200).json({ message: "Successfully deleted." });
+    }
+
+    return res.status(401).json({ message: "Can't delete this user." });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Something went wrong!" });
+  }
 };
