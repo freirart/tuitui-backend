@@ -13,8 +13,12 @@ import connection from "../../database";
 @pre<UserClass>(
   "save",
   async function (this: DocumentType<UserClass>, next: NextFunction) {
-    const hash = await bcrypt.hash(this.password, 10);
-    this.password = hash;
+    try {
+      bcrypt.getRounds(this.password);
+    } catch (err) {
+      const hash = await bcrypt.hash(this.password, 10);
+      this.password = hash;
+    }
 
     next();
   }
@@ -37,7 +41,7 @@ export class UserClass {
 
   public generateToken(this: DocumentType<UserClass>) {
     return jwt.sign({ id: this._id }, process.env.SECRET_KEY, {
-      expiresIn: 86400,
+      expiresIn: "2h",
     });
   }
 
