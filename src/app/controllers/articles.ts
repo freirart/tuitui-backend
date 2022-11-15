@@ -191,8 +191,8 @@ export const search = async (req: Request, res: Response) => {
       }
     }
 
-    // there are no reasons to show deleted users
-    andFilter.push({ isDeleted: false });
+    // there are no reasons to show deleted articles
+    andFilter.push({ isDeleted: { $ne: true } });
 
     const data = await ArticleModel.find({ $and: andFilter });
 
