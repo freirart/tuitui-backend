@@ -1,10 +1,17 @@
-import { DocumentType, getModelForClass, prop, Ref } from "@typegoose/typegoose";
+import {
+  DocumentType,
+  getModelForClass,
+  prop,
+  Ref,
+  Severity,
+} from "@typegoose/typegoose";
 import connection from "../../database";
 import { UserClass } from "./user";
+import { TagClass } from "./tag";
 
 export class ArticleClass {
   @prop({ ref: () => UserClass, required: true })
-  public ownerId!: Ref<UserClass>;
+  public author!: Ref<UserClass>;
 
   @prop({ required: true })
   public title!: string;
@@ -12,8 +19,11 @@ export class ArticleClass {
   @prop({ required: true })
   public content!: string;
 
-  @prop({ ref: () => UserClass })
-  public likes?: Ref<UserClass>[];
+  // @prop({ ref: () => UserClass })
+  // public likes?: Ref<UserClass>[];
+
+  @prop({ allowMixed: Severity.ALLOW })
+  public tags?: TagClass[];
 
   public getDocument(this: DocumentType<ArticleClass>) {
     const document = { ...this.toJSON() };
@@ -24,9 +34,7 @@ export class ArticleClass {
   }
 }
 
-const ArticleModel = getModelForClass(ArticleClass, {
+export const ArticleModel = getModelForClass(ArticleClass, {
   existingConnection: connection,
-  options: { customName: "articles" }
+  options: { customName: "articles" },
 });
-
-export default ArticleModel;
