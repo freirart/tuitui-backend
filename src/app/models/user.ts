@@ -1,9 +1,13 @@
 import {
-  DocumentType, getModelForClass, pre, prop
+  DocumentType,
+  getModelForClass,
+  pre,
+  prop,
 } from "@typegoose/typegoose";
 import bcrypt from "bcrypt";
 import { NextFunction } from "express";
 import jwt from "jsonwebtoken";
+
 import connection from "../../database";
 
 @pre<UserClass>(
@@ -51,9 +55,7 @@ export class UserClass {
   }
 }
 
-const UserModel = getModelForClass(UserClass, {
+export const UserModel = getModelForClass(UserClass, {
   existingConnection: connection,
   options: { customName: "users" },
 });
-
-export default UserModel;

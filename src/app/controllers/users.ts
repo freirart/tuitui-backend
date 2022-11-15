@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import User from "../models/user";
+import { UserModel } from "../models/user";
 
 const { PROJECT_DOC } = process.env;
 
-const isThereAnyBodyParamUndefined = require("../utils");
+import { isThereAnyBodyParamUndefined } from "../utils";
 
 export const signUp = async (req: Request, res: Response) => {
   const { username, password, description, userEmail } = req.body;
@@ -18,12 +18,12 @@ export const signUp = async (req: Request, res: Response) => {
 
     if (result.yes) {
       return res.status(400).json({
-        error: `No ${result.whichOne} provided.`,
+        error: `No '${result.whichOne}' provided.`,
         documentation: PROJECT_DOC,
       });
     }
 
-    const isExistingUser = await User.findOne({ userEmail }).exec();
+    const isExistingUser = await UserModel.findOne({ userEmail }).exec();
 
     if (isExistingUser) {
       return res.status(400).json({
@@ -32,7 +32,7 @@ export const signUp = async (req: Request, res: Response) => {
       });
     }
 
-    const user = await User.create({
+    const user = await UserModel.create({
       username,
       password,
       description,
@@ -49,6 +49,8 @@ export const signUp = async (req: Request, res: Response) => {
     console.log(err);
     res.status(500).json({ error: "Registration failed." });
   }
+
+  return res;
 };
 
 export const signIn = async (req: Request, res: Response) => {
@@ -59,12 +61,12 @@ export const signIn = async (req: Request, res: Response) => {
 
     if (result.yes) {
       return res.status(400).json({
-        error: `No ${result.whichOne} provided.`,
+        error: `No '${result.whichOne}' provided.`,
         documentation: PROJECT_DOC,
       });
     }
 
-    const user = await User.findOne({ userEmail }).select("+password");
+    const user = await UserModel.findOne({ userEmail }).select("+password");
     if (!user) {
       return res.status(401).json({
         error: "User does not exist.",
@@ -87,4 +89,6 @@ export const signIn = async (req: Request, res: Response) => {
     console.log(err);
     res.status(500).json({ error: "Couldn't sign in." });
   }
+
+  return res;
 };
