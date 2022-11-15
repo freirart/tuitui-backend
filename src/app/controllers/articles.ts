@@ -125,7 +125,9 @@ export const edit = async (req: Request, res: Response) => {
           }
 
           const updatedArticle = await existingArticle.save();
-          return res.status(200).json({ updatedArticle });
+          return res
+            .status(200)
+            .json({ updatedArticle: updatedArticle.getDocument() });
         } else {
           defaultErrorMessage += ": article deleted!";
           res.status(403);

@@ -4,11 +4,19 @@ import {
   prop,
   Ref,
   Severity,
+  pre,
 } from "@typegoose/typegoose";
 import connection from "../../database";
 import { UserClass } from "./user";
 import { TagClass } from "./tag";
 
+@pre<ArticleClass>(
+  "save",
+  function (this: DocumentType<ArticleClass>, next: Function) {
+    this.lastModifiedAt = new Date();
+    next();
+  }
+)
 export class ArticleClass {
   @prop({ ref: () => UserClass, required: true })
   public author!: Ref<UserClass>;
@@ -28,10 +36,22 @@ export class ArticleClass {
   @prop({ default: false })
   public isDeleted?: boolean;
 
+  @prop({ required: true, default: Date.now() })
+  public createdAt!: Date;
+
+  @prop({ required: true, default: Date.now() })
+  public lastModifiedAt!: Date;
+
   public getDocument(this: DocumentType<ArticleClass>) {
     const document = { ...this.toJSON() };
 
-    delete document["__v"];
+    const keysToDelete = ["__v", "createdAt", "lastModifiedAt", "isDeleted"];
+
+    for (const key of keysToDelete) {
+      if (key in document) {
+        delete document[key];
+      }
+    }
 
     return document;
   }
