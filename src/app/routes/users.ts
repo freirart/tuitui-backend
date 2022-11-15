@@ -14,5 +14,6 @@ router.use(validateToken);
 
 router.delete("/", usersController.remove);
 router.put("/", usersController.edit);
+router.get("/", usersController.search);
 
 export default router;

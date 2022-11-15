@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { UserModel } from "../models/user";
 
-import { isThereAnyBodyParamUndefined } from "../utils";
+import { areAllExpectedParamsUndefined, isThereAnyBodyParamUndefined } from "../utils";
 
 const { PROJECT_DOC } = process.env;
 
@@ -134,3 +134,43 @@ export const edit = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Something went wrong!" });
   }
 };
+
+export const search = async (req: Request, res: Response) => {
+  const { username, userEmail } = req.query;
+
+  try {
+    const result = areAllExpectedParamsUndefined({
+      username, userEmail
+    });
+
+    if (result.yes) {
+      return res.status(400).json({
+        message: result.message,
+        documentation: PROJECT_DOC,
+      });
+    }
+
+    const andFilter = [];
+
+    if (username) {
+      andFilter.push({ username: new RegExp(username as string, "ig") });
+    }
+
+    if (userEmail) {
+      andFilter.push({ userEmail });
+    }
+
+    // there are no reasons to show deleted users
+    andFilter.push({ isDeleted: { $ne: true } });
+
+    const data = await UserModel.find({ $and: andFilter });
+
+    return res.status(200).json({ data: data.map((d) => d.getDocument()) });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong." });
+  }
+
+  return res;
+};
+
