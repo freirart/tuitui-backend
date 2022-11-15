@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 
 import { ArticleModel } from "../models/article";
 
@@ -6,8 +7,8 @@ import { isThereAnyBodyParamUndefined } from "../utils/index";
 
 const { PROJECT_DOC } = process.env;
 
-export async function create(request: Request, response: Response) {
-  const { author, title, content, tags } = request.body;
+export const create = async (req: Request, res: Response) => {
+  const { author, title, content, tags } = req.body;
 
   try {
     const result = isThereAnyBodyParamUndefined({
@@ -18,8 +19,8 @@ export async function create(request: Request, response: Response) {
     });
 
     if (result.yes) {
-      return response.status(400).json({
-        error: `No '${result.whichOne}' provided.`,
+      return res.status(400).json({
+        message: `No '${result.whichOne}' provided.`,
         documentation: PROJECT_DOC,
       });
     }
@@ -32,14 +33,64 @@ export async function create(request: Request, response: Response) {
     });
     createdArticle.save();
 
-    response.status(201).json({ article: createdArticle.getDocument() });
+    res.status(201).json({ article: createdArticle.getDocument() });
   } catch (err) {
-    console.log(err);
-    response.status(500).json({ error: "Registration failed." });
+    console.error(err);
+    res.status(500).json({ message: "Registration failed." });
   }
 
-  return response;
-}
+  return res;
+};
+
+export const remove = async (req: Request, res: Response) => {
+  const { articleId } = req.query;
+  const { userId } = req;
+
+  try {
+    const result = isThereAnyBodyParamUndefined({ articleId, userId });
+
+    if (result.yes) {
+      return res.status(400).json({
+        message: `No '${result.whichOne}' provided.`,
+        documentation: PROJECT_DOC,
+      });
+    }
+    
+    if (!Types.ObjectId.isValid(articleId as string)) {
+      return res.status(400).json({ message: "Invalid article id" });
+    }
+    
+    const existingArticle = await ArticleModel.findById(articleId);
+
+    let defaultErrorMessage = "Can't delete this article";
+
+    if (existingArticle) {
+      const formattedUserId = String(userId);
+      const articleAuthorId = existingArticle.author.toString();
+
+      if (formattedUserId === articleAuthorId) {
+        if (!existingArticle.isDeleted) {
+          existingArticle.isDeleted = true;
+          existingArticle.save();
+
+          return res.status(200).json({ message: "Successfully deleted." });
+        } else {
+          defaultErrorMessage += ": article already deleted!";
+          res.status(401);
+        }
+      } else {
+        res.status(403);
+      }
+    } else {
+      res.status(401);
+    }
+
+    return res.json({ message: defaultErrorMessage });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Something went wrong!" });
+  }
+};
 
 // export async function search(request: Request, response: Response) {
 //   const { tagName } = request.query;
@@ -51,7 +102,7 @@ export async function create(request: Request, response: Response) {
 
 //     if (result.yes) {
 //       return response.status(400).json({
-//         error: `No '${result.whichOne}' provided.`,
+//         message: `No '${result.whichOne}' provided.`,
 //         documentation: PROJECT_DOC,
 //       });
 //     }
@@ -61,7 +112,7 @@ export async function create(request: Request, response: Response) {
 //     response.status(200).send({ tags: existingTags || [] });
 //   } catch (err) {
 //     console.log(err);
-//     response.status(500).json({ error: "Something went wrong." });
+//     response.status(500).json({ message: "Something went wrong." });
 //   }
 
 //   return response;

@@ -25,6 +25,9 @@ export class ArticleClass {
   @prop({ allowMixed: Severity.ALLOW })
   public tags?: TagClass[];
 
+  @prop({ default: false })
+  public isDeleted?: boolean;
+
   public getDocument(this: DocumentType<ArticleClass>) {
     const document = { ...this.toJSON() };
 

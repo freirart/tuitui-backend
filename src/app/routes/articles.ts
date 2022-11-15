@@ -9,6 +9,7 @@ const router = Router();
 router.use(validateToken);
 
 router.post("/", articlesController.create);
+router.delete("/", articlesController.remove);
 // router.post("/", articlesController.search);
 
 export default router;
