@@ -10,14 +10,14 @@ export const validateToken = (
 ) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    return res.status(401).json({ error: "No token provided." });
+    return res.status(401).json({ message: "No token provided." });
   }
 
   const parts = authHeader.split(" ");
   if (parts.length !== 2) {
     return res
       .status(401)
-      .json({ error: "Invalid token: unknown token format." });
+      .json({ message: "Invalid token: unknown token format." });
   }
 
   const [scheme, token] = parts;
@@ -25,7 +25,7 @@ export const validateToken = (
   if (!/^Bearer$/i.test(scheme)) {
     return res
       .status(401)
-      .json({ error: "Invalid token: no 'Bearer' provided." });
+      .json({ message: "Invalid token: no 'Bearer' provided." });
   }
 
   jwt.verify(
@@ -33,13 +33,13 @@ export const validateToken = (
     process.env.SECRET_KEY as jwt.Secret,
     async (err, decoded?: { id: string }) => {
       if (err instanceof jwt.TokenExpiredError) {
-        return res.status(401).json({ error: "Token expired" });
+        return res.status(401).json({ message: "Token expired" });
       }
 
       const user = await UserModel.findById(decoded?.id).exec();
 
       if (!user || err) {
-        return res.status(401).json({ error: "Invalid token." });
+        return res.status(401).json({ message: "Invalid token." });
       }
 
       req.userId = user._id;

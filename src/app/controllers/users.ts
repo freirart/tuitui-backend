@@ -18,7 +18,7 @@ export const signUp = async (req: Request, res: Response) => {
 
     if (result.yes) {
       return res.status(400).json({
-        error: `No '${result.whichOne}' provided.`,
+        message: `No '${result.whichOne}' provided.`,
         documentation: PROJECT_DOC,
       });
     }
@@ -27,7 +27,7 @@ export const signUp = async (req: Request, res: Response) => {
 
     if (isExistingUser) {
       return res.status(400).json({
-        error: "User already exists.",
+        message: "User already exists.",
         documentation: PROJECT_DOC,
       });
     }
@@ -46,8 +46,8 @@ export const signUp = async (req: Request, res: Response) => {
       .status(201)
       .json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Registration failed." });
+    console.error(err);
+    res.status(500).json({ message: "Registration failed." });
   }
 
   return res;
@@ -61,7 +61,7 @@ export const signIn = async (req: Request, res: Response) => {
 
     if (result.yes) {
       return res.status(400).json({
-        error: `No '${result.whichOne}' provided.`,
+        message: `No '${result.whichOne}' provided.`,
         documentation: PROJECT_DOC,
       });
     }
@@ -69,14 +69,14 @@ export const signIn = async (req: Request, res: Response) => {
     const user = await UserModel.findOne({ userEmail }).select("+password");
     if (!user) {
       return res.status(401).json({
-        error: "User does not exist.",
+        message: "User does not exist.",
         documentation: PROJECT_DOC,
       });
     }
 
     if (!(await user.checkPassword(password))) {
       return res.status(401).json({
-        error: "Wrong password.",
+        message: "Wrong password.",
         documentation: PROJECT_DOC,
       });
     }
@@ -86,8 +86,8 @@ export const signIn = async (req: Request, res: Response) => {
       .status(200)
       .json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Couldn't sign in." });
+    console.error(err);
+    res.status(500).json({ message: "Couldn't sign in." });
   }
 
   return res;
