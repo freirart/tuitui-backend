@@ -113,3 +113,24 @@ export const remove = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Something went wrong!" });
   }
 };
+
+export const edit = async (req: Request, res: Response) => {
+  const { userId } = req;
+
+  try {
+    const existingUser = await UserModel.findById(userId);
+
+    const expectedKeys = ["username", "description"];
+    for (const key of expectedKeys) {
+      if (key in req.body) {
+        existingUser[key] = req.body[key];
+      }
+    }
+
+    const updatedUser = await existingUser.save();
+    return res.status(200).json({ updatedUser: updatedUser.getDocument() });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Something went wrong!" });
+  }
+};

@@ -13,5 +13,6 @@ router.post("/signin", usersController.signIn);
 router.use(validateToken);
 
 router.delete("/", usersController.remove);
+router.put("/", usersController.edit);
 
 export default router;
