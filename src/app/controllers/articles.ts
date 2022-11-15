@@ -3,7 +3,11 @@ import { Types } from "mongoose";
 
 import { ArticleModel } from "../models/article";
 
-import { isThereAnyBodyParamUndefined } from "../utils/index";
+import {
+  areAllExpectedParamsUndefined,
+  isFilledArray,
+  isThereAnyBodyParamUndefined,
+} from "../utils/index";
 
 const { PROJECT_DOC } = process.env;
 
@@ -112,16 +116,19 @@ export const edit = async (req: Request, res: Response) => {
       if (formattedUserId === articleAuthorId) {
         if (!existingArticle.isDeleted) {
           for (const key of Object.keys(req.body)) {
-            if (key in existingArticle && !Types.ObjectId.isValid(existingArticle[key])) {
+            if (
+              key in existingArticle &&
+              !Types.ObjectId.isValid(existingArticle[key])
+            ) {
               existingArticle[key] = req.body[key];
             }
           }
-  
+
           const updatedArticle = await existingArticle.save();
           return res.status(200).json({ updatedArticle });
         } else {
           defaultErrorMessage += ": article deleted!";
-          res.status(403);  
+          res.status(403);
         }
       } else {
         res.status(403);
@@ -137,28 +144,58 @@ export const edit = async (req: Request, res: Response) => {
   }
 };
 
-// export async function search(request: Request, response: Response) {
-//   const { tagName } = request.query;
+export const search = async (req: Request, res: Response) => {
+  const { author, title, tags } = req.query;
 
-//   try {
-//     const result = isThereAnyBodyParamUndefined({
-//       tagName,
-//     });
+  try {
+    const result = areAllExpectedParamsUndefined({
+      author,
+      title,
+      tags,
+    });
 
-//     if (result.yes) {
-//       return response.status(400).json({
-//         message: `No '${result.whichOne}' provided.`,
-//         documentation: PROJECT_DOC,
-//       });
-//     }
+    if (result.yes) {
+      return res.status(400).json({
+        message: result.message,
+        documentation: PROJECT_DOC,
+      });
+    }
 
-//     const existingTags = await TagModel.getTagBasedOnItsName(tagName as string);
+    const andFilter = [];
 
-//     response.status(200).send({ tags: existingTags || [] });
-//   } catch (err) {
-//     console.log(err);
-//     response.status(500).json({ message: "Something went wrong." });
-//   }
+    if (title) {
+      andFilter.push({ title: new RegExp(title, "ig") });
+    }
 
-//   return response;
-// }
+    if (Types.ObjectId.isValid(author as string)) {
+      andFilter.push({ author });
+    }
+
+    if (tags) {
+      try {
+        const formattedTags = JSON.parse(tags as string);
+
+        if (!isFilledArray(formattedTags)) {
+          throw new Error("Provided tags are not a filled array");
+        }
+
+        andFilter.push({ "tags.tagName": { $in: formattedTags } });
+      } catch (err) {
+        console.error(err);
+        return res.status(400).json({
+          message: "Could not understand provided tags",
+          documentation: PROJECT_DOC,
+        });
+      }
+    }
+
+    const data = await ArticleModel.find({ $and: andFilter });
+
+    return res.status(200).json({ data: data.map((d) => d.getDocument()) });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong." });
+  }
+
+  return res;
+};
