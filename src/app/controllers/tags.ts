@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import TagModel from "../models/tag";
+import { TagModel } from "../models/tag";
 
 import { isThereAnyBodyParamUndefined } from "../utils/index";
 
@@ -35,7 +35,7 @@ export async function create(request: Request, response: Response) {
     const createdTag = await TagModel.create({ tagName });
     createdTag.save();
 
-    response.status(201).send({ status: "Registration done." });
+    response.status(201).json({ status: "Registration done." });
   } catch (err) {
     console.log(err);
     response.status(500).json({ error: "Registration failed." });
@@ -61,7 +61,7 @@ export async function search(request: Request, response: Response) {
 
     const existingTags = await TagModel.getTagBasedOnItsName(tagName as string);
 
-    response.status(200).send({ tags: existingTags || [] });
+    response.status(200).json({ tags: existingTags || [] });
   } catch (err) {
     console.log(err);
     response.status(500).json({ error: "Something went wrong." });

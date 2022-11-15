@@ -38,9 +38,7 @@ export class TagClass {
   }
 }
 
-const TagModel = getModelForClass(TagClass, {
+export const TagModel = getModelForClass(TagClass, {
   existingConnection: connection,
   options: { customName: "tags" },
 });
-
-export default TagModel;
