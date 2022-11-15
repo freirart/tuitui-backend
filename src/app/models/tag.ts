@@ -11,9 +11,11 @@ export class TagClass {
   public tagName!: string;
 
   private static removeUnusedKeysFromObj(obj: object) {
-    delete obj["__v"];
+    const objCopy = JSON.parse(JSON.stringify(obj));
 
-    return obj;
+    delete objCopy["__v"];
+
+    return objCopy;
   }
 
   public getDocument(this: DocumentType<TagClass>) {
@@ -26,15 +28,17 @@ export class TagClass {
     this: ReturnModelType<typeof TagClass>,
     tagName: string
   ) {
-    const foundTag = await this.findOne({
-      tagName: { $regex: new RegExp(tagName, "i") },
-    });
+    const filter = tagName
+      ? {
+        tagName: { $regex: new RegExp(tagName, "i") },
+      }
+      : {};
 
-    if (foundTag) {
-      return TagClass.removeUnusedKeysFromObj(foundTag);
-    }
+    const foundTags = await this.find(filter);
 
-    return null;
+    const formattedTags = foundTags.map(tag => TagClass.removeUnusedKeysFromObj(tag));
+
+    return formattedTags;
   }
 }
 

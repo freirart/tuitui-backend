@@ -48,18 +48,9 @@ export async function search(request: Request, response: Response) {
   const { tagName } = request.query;
 
   try {
-    const result = isThereAnyBodyParamUndefined({
-      tagName,
-    });
-
-    if (result.yes) {
-      return response.status(400).json({
-        error: `No '${result.whichOne}' provided.`,
-        documentation: PROJECT_DOC,
-      });
-    }
-
-    const existingTags = await TagModel.getTagBasedOnItsName(tagName as string);
+    const existingTags = await TagModel.getTagBasedOnItsName(
+      String(tagName ? tagName : "")
+    );
 
     response.status(200).json({ tags: existingTags || [] });
   } catch (err) {
