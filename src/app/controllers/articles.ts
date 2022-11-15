@@ -61,7 +61,7 @@ export const remove = async (req: Request, res: Response) => {
     }
 
     if (!Types.ObjectId.isValid(articleId as string)) {
-      return res.status(400).json({ message: "Invalid article id" });
+      return res.status(400).json({ message: "Invalid article id." });
     }
 
     const existingArticle = await ArticleModel.findById(articleId);
@@ -102,7 +102,7 @@ export const edit = async (req: Request, res: Response) => {
 
   try {
     if (!Types.ObjectId.isValid(articleId as string)) {
-      return res.status(400).json({ message: "Invalid article id" });
+      return res.status(400).json({ message: "Invalid article id." });
     }
 
     const existingArticle = await ArticleModel.findById(articleId);
@@ -164,7 +164,7 @@ export const search = async (req: Request, res: Response) => {
     const andFilter = [];
 
     if (title) {
-      andFilter.push({ title: new RegExp(title, "ig") });
+      andFilter.push({ title: new RegExp(title as string, "ig") });
     }
 
     if (Types.ObjectId.isValid(author as string)) {
@@ -188,6 +188,9 @@ export const search = async (req: Request, res: Response) => {
         });
       }
     }
+
+    // there are no reasons to show deleted users
+    andFilter.push({ isDeleted: false });
 
     const data = await ArticleModel.find({ $and: andFilter });
 
