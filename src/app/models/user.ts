@@ -5,14 +5,13 @@ import {
   prop,
 } from "@typegoose/typegoose";
 import bcrypt from "bcrypt";
-import { NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 import connection from "../../database";
 
 @pre<UserClass>(
   "save",
-  async function (this: DocumentType<UserClass>, next: NextFunction) {
+  async function (this: DocumentType<UserClass>, next: Function) {
     if (this.password) {
       try {
         bcrypt.getRounds(this.password);
@@ -21,6 +20,8 @@ import connection from "../../database";
         this.password = hash;
       }
     }
+
+    this.lastModifiedAt = new Date();
 
     next();
   }
@@ -41,6 +42,9 @@ export class UserClass {
   @prop({ required: true, default: Date.now() })
   public createdAt!: Date;
 
+  @prop({ required: true, default: Date.now() })
+  public lastModifiedAt!: Date;
+
   @prop({ default: false })
   public isDeleted?: boolean;
 
@@ -55,12 +59,17 @@ export class UserClass {
   }
 
   public getDocument(this: DocumentType<UserClass>) {
-    const userDocument = { ...this.toJSON() };
+    const document = { ...this.toJSON() };
 
-    delete userDocument.password;
-    delete userDocument["__v"];
+    const keysToDelete = ["password", "__v", "createdAt", "isDeleted", "lastModifiedAt"];
 
-    return userDocument;
+    for (const key of keysToDelete) {
+      if (key in document) {
+        delete document[key];
+      }
+    }
+
+    return document;
   }
 }
 
