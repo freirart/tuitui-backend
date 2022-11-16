@@ -33,12 +33,12 @@ export const validateToken = (
     process.env.SECRET_KEY as jwt.Secret,
     async (err, decoded?: { id: string }) => {
       if (err instanceof jwt.TokenExpiredError) {
-        return res.status(401).json({ message: "Token expired" });
+        return res.status(401).json({ message: "Token expired." });
       }
 
-      const user = await UserModel.findById(decoded?.id).exec();
+      const user = await UserModel.findById(decoded?.id);
 
-      if (!user || err) {
+      if (!user || err || user.isDeleted) {
         return res.status(401).json({ message: "Invalid token." });
       }
 

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
+
 import { UserModel } from "../models/user";
 
-const { PROJECT_DOC } = process.env;
+import { areAllExpectedParamsUndefined, isThereAnyBodyParamUndefined } from "../utils";
 
-import { isThereAnyBodyParamUndefined } from "../utils";
+const { PROJECT_DOC } = process.env;
 
 export const signUp = async (req: Request, res: Response) => {
   const { username, password, description, userEmail } = req.body;
@@ -92,3 +93,84 @@ export const signIn = async (req: Request, res: Response) => {
 
   return res;
 };
+
+export const remove = async (req: Request, res: Response) => {
+  const { userId } = req;
+
+  try {
+    const existingUser = await UserModel.findById(userId);
+
+    if (existingUser && !existingUser.isDeleted) {
+      existingUser.isDeleted = true;
+      existingUser.save();
+
+      return res.status(200).json({ message: "Successfully deleted." });
+    }
+
+    return res.status(401).json({ message: "Can't delete this user." });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
+export const edit = async (req: Request, res: Response) => {
+  const { userId } = req;
+
+  try {
+    const existingUser = await UserModel.findById(userId);
+
+    const expectedKeys = ["username", "description"];
+    for (const key of expectedKeys) {
+      if (key in req.body) {
+        existingUser[key] = req.body[key];
+      }
+    }
+
+    const updatedUser = await existingUser.save();
+    return res.status(200).json({ updatedUser: updatedUser.getDocument() });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
+export const search = async (req: Request, res: Response) => {
+  const { username, userEmail } = req.query;
+
+  try {
+    const result = areAllExpectedParamsUndefined({
+      username, userEmail
+    });
+
+    if (result.yes) {
+      return res.status(400).json({
+        message: result.message,
+        documentation: PROJECT_DOC,
+      });
+    }
+
+    const andFilter = [];
+
+    if (username) {
+      andFilter.push({ username: new RegExp(username as string, "ig") });
+    }
+
+    if (userEmail) {
+      andFilter.push({ userEmail });
+    }
+
+    // there are no reasons to show deleted users
+    andFilter.push({ isDeleted: { $ne: true } });
+
+    const data = await UserModel.find({ $and: andFilter });
+
+    return res.status(200).json({ data: data.map((d) => d.getDocument()) });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong." });
+  }
+
+  return res;
+};
+
