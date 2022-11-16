@@ -6,8 +6,8 @@ import { isThereAnyBodyParamUndefined, isFilledArray } from "../utils/index";
 
 const { PROJECT_DOC } = process.env;
 
-export async function create(request: Request, response: Response) {
-  const { tagName } = request.body;
+export const create = async (req: Request, res: Response) => {
+  const { tagName } = req.body;
 
   try {
     const result = isThereAnyBodyParamUndefined({
@@ -15,8 +15,8 @@ export async function create(request: Request, response: Response) {
     });
 
     if (result.yes) {
-      return response.status(400).json({
-        error: `No '${result.whichOne}' provided.`,
+      return res.status(400).json({
+        message: `No '${result.whichOne}' provided.`,
         documentation: PROJECT_DOC,
       });
     }
@@ -27,8 +27,8 @@ export async function create(request: Request, response: Response) {
     );
 
     if (isFilledArray(existingTags)) {
-      return response.status(400).json({
-        error: "Tag is already created",
+      return res.status(400).json({
+        message: "Tag is already created",
         documentation: PROJECT_DOC,
       });
     }
@@ -36,28 +36,28 @@ export async function create(request: Request, response: Response) {
     const createdTag = await TagModel.create({ tagName });
     createdTag.save();
 
-    response.status(201).json({ status: "Registration done." });
+    res.status(201).json({ message: "Registration done." });
   } catch (err) {
-    console.log(err);
-    response.status(500).json({ error: "Registration failed." });
+    console.error(err);
+    res.status(500).json({ message: "Registration failed." });
   }
 
-  return response;
-}
+  return res;
+};
 
-export async function search(request: Request, response: Response) {
-  const { tagName } = request.query;
+export const search = async (req: Request, res: Response) => {
+  const { tagName } = req.query;
 
   try {
     const existingTags = await TagModel.getTagBasedOnItsName(
       String(tagName ? tagName : "")
     );
 
-    response.status(200).json({ tags: existingTags || [] });
+    res.status(200).json({ tags: existingTags || [] });
   } catch (err) {
-    console.log(err);
-    response.status(500).json({ error: "Something went wrong." });
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong!" });
   }
 
-  return response;
-}
+  return res;
+};

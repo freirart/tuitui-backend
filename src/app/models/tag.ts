@@ -10,12 +10,21 @@ export class TagClass {
   @prop({ required: true })
   public tagName!: string;
 
+  @prop({ required: true, default: Date.now() })
+  public createdAt: Date;
+
   private static removeUnusedKeysFromObj(obj: object) {
-    const objCopy = JSON.parse(JSON.stringify(obj));
+    const document = JSON.parse(JSON.stringify(obj));
 
-    delete objCopy["__v"];
+    const keysToDelete = ["__v", "createdAt"];
 
-    return objCopy;
+    for (const key of keysToDelete) {
+      if (key in document) {
+        delete document[key];
+      }
+    }
+
+    return document;
   }
 
   public getDocument(this: DocumentType<TagClass>) {
@@ -37,7 +46,9 @@ export class TagClass {
 
     const foundTags = await this.find(filter);
 
-    const formattedTags = foundTags.map(tag => TagClass.removeUnusedKeysFromObj(tag));
+    const formattedTags = foundTags.map((tag) =>
+      TagClass.removeUnusedKeysFromObj(tag)
+    );
 
     return formattedTags;
   }

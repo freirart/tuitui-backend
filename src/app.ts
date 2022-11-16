@@ -26,7 +26,7 @@ app.use("/articles", articlesRoutes);
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({
-    error: "Invalid endpoint.",
+    message: "Invalid endpoint.",
     documentation:
       "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md",
   });
