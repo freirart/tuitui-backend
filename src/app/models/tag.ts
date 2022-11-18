@@ -10,10 +10,21 @@ export class TagClass {
   @prop({ required: true })
   public tagName!: string;
 
-  private static removeUnusedKeysFromObj(obj: object) {
-    delete obj["__v"];
+  @prop({ required: true, default: Date.now() })
+  public createdAt: Date;
 
-    return obj;
+  private static removeUnusedKeysFromObj(obj: object) {
+    const document = JSON.parse(JSON.stringify(obj));
+
+    const keysToDelete = ["__v", "createdAt"];
+
+    for (const key of keysToDelete) {
+      if (key in document) {
+        delete document[key];
+      }
+    }
+
+    return document;
   }
 
   public getDocument(this: DocumentType<TagClass>) {
@@ -24,23 +35,26 @@ export class TagClass {
 
   public static async getTagBasedOnItsName(
     this: ReturnModelType<typeof TagClass>,
-    tagName: string
+    tagName: string,
+    shouldBeExact = false
   ) {
-    const foundTag = await this.findOne({
-      tagName: { $regex: new RegExp(tagName, "i") },
-    });
+    const filter = tagName
+      ? {
+        tagName: { $regex: new RegExp(tagName, shouldBeExact ? "i" : "gi") },
+      }
+      : {};
 
-    if (foundTag) {
-      return TagClass.removeUnusedKeysFromObj(foundTag);
-    }
+    const foundTags = await this.find(filter);
 
-    return null;
+    const formattedTags = foundTags.map((tag) =>
+      TagClass.removeUnusedKeysFromObj(tag)
+    );
+
+    return formattedTags;
   }
 }
 
-const TagModel = getModelForClass(TagClass, {
+export const TagModel = getModelForClass(TagClass, {
   existingConnection: connection,
   options: { customName: "tags" },
 });
-
-export default TagModel;

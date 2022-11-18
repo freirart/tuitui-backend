@@ -17,3 +17,18 @@ export const isThereAnyBodyParamUndefined = (paramsObject: object) => {
 
   return defaultObj;
 };
+
+export const areAllExpectedParamsUndefined = (paramsObject: object) => {
+  const result = { yes: false, message: "" };
+
+  if (Object.values(paramsObject).every((val) => val === undefined)) {
+    result.yes = true;
+    result.message = `Missing at least one argument: ${Object.keys(
+      paramsObject
+    ).join(", ")}`;
+  }
+
+  return result;
+};
+
+export const isFilledArray = (val: any) => Array.isArray(val) && !!val.length;

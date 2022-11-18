@@ -1,24 +1,32 @@
-import { NextFunction } from "express";
+import {
+  DocumentType,
+  getModelForClass,
+  pre,
+  prop,
+} from "@typegoose/typegoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import {
-  getModelForClass,
-  prop,
-  DocumentType,
-  pre,
-} from "@typegoose/typegoose";
+
 import connection from "../../database";
 
 @pre<UserClass>(
   "save",
-  async function (this: DocumentType<UserClass>, next: NextFunction) {
-    const hash = await bcrypt.hash(this.password, 10);
-    this.password = hash;
+  async function (this: DocumentType<UserClass>, next: Function) {
+    if (this.password) {
+      try {
+        bcrypt.getRounds(this.password);
+      } catch (err) {
+        const hash = await bcrypt.hash(this.password, 10);
+        this.password = hash;
+      }
+    }
+
+    this.lastModifiedAt = new Date();
 
     next();
   }
 )
-class UserClass {
+export class UserClass {
   @prop({ required: true })
   public username!: string;
 
@@ -34,9 +42,15 @@ class UserClass {
   @prop({ required: true, default: Date.now() })
   public createdAt!: Date;
 
+  @prop({ required: true, default: Date.now() })
+  public lastModifiedAt!: Date;
+
+  @prop({ default: false })
+  public isDeleted?: boolean;
+
   public generateToken(this: DocumentType<UserClass>) {
     return jwt.sign({ id: this._id }, process.env.SECRET_KEY, {
-      expiresIn: 86400,
+      expiresIn: "2h",
     });
   }
 
@@ -45,18 +59,21 @@ class UserClass {
   }
 
   public getDocument(this: DocumentType<UserClass>) {
-    const userDocument = { ...this.toJSON() };
+    const document = { ...this.toJSON() };
 
-    delete userDocument.password;
-    delete userDocument["__v"];
+    const keysToDelete = ["password", "__v", "createdAt", "isDeleted", "lastModifiedAt"];
 
-    return userDocument;
+    for (const key of keysToDelete) {
+      if (key in document) {
+        delete document[key];
+      }
+    }
+
+    return document;
   }
 }
 
-const UserModel = getModelForClass(UserClass, {
+export const UserModel = getModelForClass(UserClass, {
   existingConnection: connection,
   options: { customName: "users" },
 });
-
-export default UserModel;

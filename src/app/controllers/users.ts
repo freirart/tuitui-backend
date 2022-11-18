@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import User from "../models/user";
+
+import { UserModel } from "../models/user";
+
+import { areAllExpectedParamsUndefined, isThereAnyBodyParamUndefined } from "../utils";
 
 const { PROJECT_DOC } = process.env;
-
-import { isThereAnyBodyParamUndefined } from "../utils";
 
 export const signUp = async (req: Request, res: Response) => {
   const { username, password, description, userEmail } = req.body;
@@ -18,21 +19,21 @@ export const signUp = async (req: Request, res: Response) => {
 
     if (result.yes) {
       return res.status(400).json({
-        error: `No '${result.whichOne}' provided.`,
+        message: `No '${result.whichOne}' provided.`,
         documentation: PROJECT_DOC,
       });
     }
 
-    const isExistingUser = await User.findOne({ userEmail }).exec();
+    const isExistingUser = await UserModel.findOne({ userEmail }).exec();
 
     if (isExistingUser) {
       return res.status(400).json({
-        error: "User already exists.",
+        message: "User already exists.",
         documentation: PROJECT_DOC,
       });
     }
 
-    const user = await User.create({
+    const user = await UserModel.create({
       username,
       password,
       description,
@@ -46,8 +47,8 @@ export const signUp = async (req: Request, res: Response) => {
       .status(201)
       .json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Registration failed." });
+    console.error(err);
+    res.status(500).json({ message: "Registration failed." });
   }
 
   return res;
@@ -61,22 +62,22 @@ export const signIn = async (req: Request, res: Response) => {
 
     if (result.yes) {
       return res.status(400).json({
-        error: `No '${result.whichOne}' provided.`,
+        message: `No '${result.whichOne}' provided.`,
         documentation: PROJECT_DOC,
       });
     }
 
-    const user = await User.findOne({ userEmail }).select("+password");
+    const user = await UserModel.findOne({ userEmail }).select("+password");
     if (!user) {
       return res.status(401).json({
-        error: "User does not exist.",
+        message: "User does not exist.",
         documentation: PROJECT_DOC,
       });
     }
 
     if (!(await user.checkPassword(password))) {
       return res.status(401).json({
-        error: "Wrong password.",
+        message: "Wrong password.",
         documentation: PROJECT_DOC,
       });
     }
@@ -86,9 +87,90 @@ export const signIn = async (req: Request, res: Response) => {
       .status(200)
       .json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Couldn't sign in." });
+    console.error(err);
+    res.status(500).json({ message: "Couldn't sign in." });
   }
 
   return res;
 };
+
+export const remove = async (req: Request, res: Response) => {
+  const { userId } = req;
+
+  try {
+    const existingUser = await UserModel.findById(userId);
+
+    if (existingUser && !existingUser.isDeleted) {
+      existingUser.isDeleted = true;
+      existingUser.save();
+
+      return res.status(200).json({ message: "Successfully deleted." });
+    }
+
+    return res.status(401).json({ message: "Can't delete this user." });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
+export const edit = async (req: Request, res: Response) => {
+  const { userId } = req;
+
+  try {
+    const existingUser = await UserModel.findById(userId);
+
+    const expectedKeys = ["username", "description"];
+    for (const key of expectedKeys) {
+      if (key in req.body) {
+        existingUser[key] = req.body[key];
+      }
+    }
+
+    const updatedUser = await existingUser.save();
+    return res.status(200).json({ updatedUser: updatedUser.getDocument() });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
+export const search = async (req: Request, res: Response) => {
+  const { username, userEmail } = req.query;
+
+  try {
+    const result = areAllExpectedParamsUndefined({
+      username, userEmail
+    });
+
+    if (result.yes) {
+      return res.status(400).json({
+        message: result.message,
+        documentation: PROJECT_DOC,
+      });
+    }
+
+    const andFilter = [];
+
+    if (username) {
+      andFilter.push({ username: new RegExp(username as string, "ig") });
+    }
+
+    if (userEmail) {
+      andFilter.push({ userEmail });
+    }
+
+    // there are no reasons to show deleted users
+    andFilter.push({ isDeleted: { $ne: true } });
+
+    const data = await UserModel.find({ $and: andFilter });
+
+    return res.status(200).json({ data: data.map((d) => d.getDocument()) });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong." });
+  }
+
+  return res;
+};
+

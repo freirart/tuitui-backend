@@ -7,6 +7,7 @@ import cors from "cors";
 
 import usersRoutes from "./app/routes/users";
 import tagsRoutes from "./app/routes/tags";
+import articlesRoutes from "./app/routes/articles";
 
 const corsConfig = require("./config/cors");
 
@@ -21,10 +22,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/users", usersRoutes);
 app.use("/tags", tagsRoutes);
+app.use("/articles", articlesRoutes);
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({
-    error: "Invalid endpoint.",
+    message: "Invalid endpoint.",
     documentation:
       "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md",
   });
