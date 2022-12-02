@@ -12,5 +12,6 @@ router.post("/", articlesController.create);
 router.delete("/", articlesController.remove);
 router.put("/", articlesController.edit);
 router.get("/", articlesController.search);
+router.get("/by", articlesController.searchBy);
 
 export default router;

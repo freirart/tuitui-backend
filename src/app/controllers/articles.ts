@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Types } from "mongoose";
 
 import { ArticleModel } from "../models/article";
+import { UserModel } from "../models/user";
 
 import {
   areAllExpectedParamsUndefined,
@@ -193,6 +194,45 @@ export const search = async (req: Request, res: Response) => {
 
     // there are no reasons to show deleted articles
     andFilter.push({ isDeleted: { $ne: true } });
+
+    const data = await ArticleModel.find({ $and: andFilter });
+
+    return res.status(200).json({ data: data.map((d) => d.getDocument()) });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong." });
+  }
+
+  return res;
+};
+
+export const searchBy = async (req: Request, res: Response) => {
+  const { type, item } = req.query;
+
+  try {
+    const result = areAllExpectedParamsUndefined({
+      type,
+      item
+    });
+
+    if (result.yes) {
+      return res.status(400).json({
+        message: result.message,
+        documentation: PROJECT_DOC,
+      });
+    }
+
+    const andFilter = [];
+
+    // there are no reasons to show deleted articles
+    andFilter.push({ isDeleted: { $ne: true } });
+
+    if (type === "author") {
+      const user = await UserModel.find({ $and: [{ username: {$in: new RegExp(item as string, "ig") }}] });
+      andFilter.push({ author: { $in: user[0]["_id"] } });
+    } else {
+      andFilter.push({ "tags.tagName": { $in: item } });
+    }
 
     const data = await ArticleModel.find({ $and: andFilter });
 
