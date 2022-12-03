@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Types } from "mongoose";
 
 import { ArticleModel } from "../models/article";
+import { UserModel } from "../models/user";
 
 import {
   areAllExpectedParamsUndefined,
@@ -12,7 +13,8 @@ import {
 const { PROJECT_DOC } = process.env;
 
 export const create = async (req: Request, res: Response) => {
-  const { author, title, content, tags } = req.body;
+  const { title, content, tags } = req.body;
+  const { userId: author } = req;
 
   try {
     const result = isThereAnyBodyParamUndefined({
@@ -169,10 +171,6 @@ export const search = async (req: Request, res: Response) => {
       andFilter.push({ title: new RegExp(title as string, "ig") });
     }
 
-    if (Types.ObjectId.isValid(author as string)) {
-      andFilter.push({ author });
-    }
-
     if (tags) {
       try {
         const formattedTags = JSON.parse(tags as string);
@@ -194,9 +192,23 @@ export const search = async (req: Request, res: Response) => {
     // there are no reasons to show deleted articles
     andFilter.push({ isDeleted: { $ne: true } });
 
-    const data = await ArticleModel.find({ $and: andFilter });
+    const data = await ArticleModel.find({ $and: andFilter }).populate(
+      "author",
+      "username",
+      UserModel
+    );
 
-    return res.status(200).json({ data: data.map((d) => d.getDocument()) });
+    let filteredData = data;
+
+    if (author) {
+      const authorRegex = new RegExp(author as string, "ig");
+
+      filteredData = data.filter((d) => authorRegex.test(d.author["username"]));
+    }
+
+    return res
+      .status(200)
+      .json({ data: filteredData.map((d) => d.getDocument()) });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Something went wrong." });

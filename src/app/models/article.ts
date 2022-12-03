@@ -18,7 +18,7 @@ import { TagClass } from "./tag";
   }
 )
 export class ArticleClass {
-  @prop({ ref: () => UserClass, required: true })
+  @prop({ autopopulate: true, ref: () => UserClass, required: true })
   public author!: Ref<UserClass>;
 
   @prop({ required: true })
