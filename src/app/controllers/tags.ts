@@ -53,7 +53,7 @@ export const search = async (req: Request, res: Response) => {
       String(tagName ? tagName : "")
     );
 
-    res.status(200).json({ tags: existingTags || [] });
+    res.status(200).json({ data: existingTags || [] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Something went wrong!" });
