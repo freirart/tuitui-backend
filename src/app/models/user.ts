@@ -61,7 +61,13 @@ export class UserClass {
   public getDocument(this: DocumentType<UserClass>) {
     const document = { ...this.toJSON() };
 
-    const keysToDelete = ["password", "__v", "createdAt", "isDeleted", "lastModifiedAt"];
+    const keysToDelete = [
+      "password",
+      "__v",
+      "createdAt",
+      "isDeleted",
+      "lastModifiedAt",
+    ];
 
     for (const key of keysToDelete) {
       if (key in document) {
