@@ -2,41 +2,44 @@ import { Request, Response } from "express";
 
 import { TagModel } from "../models/tag";
 
-import { isThereAnyBodyParamUndefined, isFilledArray } from "../utils/index";
+import { isFilledArray } from "../utils/index";
 
 const { PROJECT_DOC } = process.env;
 
 export const create = async (req: Request, res: Response) => {
-  const { tagName } = req.body;
+  const { tagList } = req.body;
 
   try {
-    const result = isThereAnyBodyParamUndefined({
-      tagName,
+    if (!isFilledArray(tagList)) {
+      return res.status(400).json({
+        message: "Body should contain a 'tagList' array value.",
+        documentation: PROJECT_DOC,
+      });
+    }
+
+    let createdTags = 0;
+
+    for (const tag of tagList) {
+      const existingTags = await TagModel.getTagBasedOnItsName(
+        tag as string,
+        true
+      );
+
+      if (!isFilledArray(existingTags)) {
+        const createdTag = await TagModel.create({ tagName: tag });
+        createdTag.save();
+        createdTags += 1;
+      }
+    }
+
+    if (createdTags) {
+      return res.status(201).json({ message: "Registration done." });
+    }
+
+    return res.status(400).json({
+      message: "All Tags were already created",
+      documentation: PROJECT_DOC,
     });
-
-    if (result.yes) {
-      return res.status(400).json({
-        message: `No '${result.whichOne}' provided.`,
-        documentation: PROJECT_DOC,
-      });
-    }
-
-    const existingTags = await TagModel.getTagBasedOnItsName(
-      tagName as string,
-      true
-    );
-
-    if (isFilledArray(existingTags)) {
-      return res.status(400).json({
-        message: "Tag is already created",
-        documentation: PROJECT_DOC,
-      });
-    }
-
-    const createdTag = await TagModel.create({ tagName });
-    createdTag.save();
-
-    res.status(201).json({ message: "Registration done." });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Registration failed." });
