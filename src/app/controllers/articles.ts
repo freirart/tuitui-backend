@@ -149,13 +149,14 @@ export const edit = async (req: Request, res: Response) => {
 };
 
 export const search = async (req: Request, res: Response) => {
-  const { author, title, tags } = req.query;
+  const { author, title, tags, id } = req.query;
 
   try {
     const result = areAllExpectedParamsUndefined({
       author,
       title,
       tags,
+      id,
     });
 
     if (result.yes) {
@@ -166,6 +167,10 @@ export const search = async (req: Request, res: Response) => {
     }
 
     const andFilter = [];
+
+    if (id && Types.ObjectId.isValid(id as string)) {
+      andFilter.push({ "_id": id });
+    }
 
     if (title) {
       andFilter.push({ title: new RegExp(title as string, "ig") });
