@@ -120,6 +120,7 @@ export const edit = async (req: Request, res: Response) => {
           for (const key of Object.keys(req.body)) {
             if (
               key in existingArticle &&
+              key !== undefined &&
               !Types.ObjectId.isValid(existingArticle[key])
             ) {
               existingArticle[key] = req.body[key];
