@@ -82,13 +82,13 @@ export const remove = async (req: Request, res: Response) => {
           return res.status(200).json({ message: "Successfully deleted." });
         } else {
           defaultErrorMessage += ": article already deleted!";
-          res.status(401);
+          res.status(400);
         }
       } else {
-        res.status(403);
+        res.status(401);
       }
     } else {
-      res.status(401);
+      res.status(400);
     }
 
     return res.json({ message: defaultErrorMessage });
@@ -109,7 +109,7 @@ export const edit = async (req: Request, res: Response) => {
 
     const existingArticle = await ArticleModel.findById(articleId);
 
-    let defaultErrorMessage = "Can't delete this article";
+    let defaultErrorMessage = "Can't edit this article";
 
     if (existingArticle) {
       const formattedUserId = String(userId);
@@ -120,6 +120,7 @@ export const edit = async (req: Request, res: Response) => {
           for (const key of Object.keys(req.body)) {
             if (
               key in existingArticle &&
+              key !== undefined &&
               !Types.ObjectId.isValid(existingArticle[key])
             ) {
               existingArticle[key] = req.body[key];
@@ -132,13 +133,13 @@ export const edit = async (req: Request, res: Response) => {
             .json({ updatedArticle: updatedArticle.getDocument() });
         } else {
           defaultErrorMessage += ": article deleted!";
-          res.status(403);
+          res.status(400);
         }
       } else {
-        res.status(403);
+        res.status(401);
       }
     } else {
-      res.status(401);
+      res.status(400);
     }
 
     return res.json({ message: defaultErrorMessage });
@@ -149,13 +150,14 @@ export const edit = async (req: Request, res: Response) => {
 };
 
 export const search = async (req: Request, res: Response) => {
-  const { author, title, tags } = req.query;
+  const { author, title, tags, id } = req.query;
 
   try {
     const result = areAllExpectedParamsUndefined({
       author,
       title,
       tags,
+      id,
     });
 
     if (result.yes) {
@@ -166,6 +168,16 @@ export const search = async (req: Request, res: Response) => {
     }
 
     const andFilter = [];
+
+    if (id) {
+      const formattedId = String(id).replace(/\s/gi, '');
+
+      if (Types.ObjectId.isValid(formattedId)) {
+        andFilter.push({ _id: formattedId });
+      } else {
+        return res.status(400).json({ message: "Invalid article id." });
+      }
+    }
 
     if (title) {
       andFilter.push({ title: new RegExp(title as string, "ig") });
