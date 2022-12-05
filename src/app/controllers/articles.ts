@@ -82,13 +82,13 @@ export const remove = async (req: Request, res: Response) => {
           return res.status(200).json({ message: "Successfully deleted." });
         } else {
           defaultErrorMessage += ": article already deleted!";
-          res.status(401);
+          res.status(400);
         }
       } else {
-        res.status(403);
+        res.status(401);
       }
     } else {
-      res.status(401);
+      res.status(400);
     }
 
     return res.json({ message: defaultErrorMessage });
@@ -109,7 +109,7 @@ export const edit = async (req: Request, res: Response) => {
 
     const existingArticle = await ArticleModel.findById(articleId);
 
-    let defaultErrorMessage = "Can't delete this article";
+    let defaultErrorMessage = "Can't edit this article";
 
     if (existingArticle) {
       const formattedUserId = String(userId);
@@ -133,13 +133,13 @@ export const edit = async (req: Request, res: Response) => {
             .json({ updatedArticle: updatedArticle.getDocument() });
         } else {
           defaultErrorMessage += ": article deleted!";
-          res.status(403);
+          res.status(400);
         }
       } else {
-        res.status(403);
+        res.status(401);
       }
     } else {
-      res.status(401);
+      res.status(400);
     }
 
     return res.json({ message: defaultErrorMessage });
@@ -161,16 +161,22 @@ export const search = async (req: Request, res: Response) => {
     });
 
     if (result.yes) {
-      return res.status(400).json({
-        message: result.message,
-        documentation: PROJECT_DOC,
-      });
+      return res.status(400).json({ message: "Invalid article id." });
     }
 
     const andFilter = [];
 
-    if (id && Types.ObjectId.isValid(id as string)) {
-      andFilter.push({ "_id": id });
+    if (id) {
+      const formattedId = String(id).replace(/\s/gi, '');
+
+      if (Types.ObjectId.isValid(formattedId)) {
+        andFilter.push({ _id: formattedId });
+      } else {
+        return res.status(400).json({
+          message: result.message,
+          documentation: PROJECT_DOC,
+        });
+      }
     }
 
     if (title) {
