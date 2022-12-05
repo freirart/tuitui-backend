@@ -161,7 +161,10 @@ export const search = async (req: Request, res: Response) => {
     });
 
     if (result.yes) {
-      return res.status(400).json({ message: "Invalid article id." });
+      return res.status(400).json({
+        message: result.message,
+        documentation: PROJECT_DOC,
+      });
     }
 
     const andFilter = [];
@@ -172,10 +175,7 @@ export const search = async (req: Request, res: Response) => {
       if (Types.ObjectId.isValid(formattedId)) {
         andFilter.push({ _id: formattedId });
       } else {
-        return res.status(400).json({
-          message: result.message,
-          documentation: PROJECT_DOC,
-        });
+        return res.status(400).json({ message: "Invalid article id." });
       }
     }
 
