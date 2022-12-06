@@ -32,3 +32,6 @@ export const areAllExpectedParamsUndefined = (paramsObject: object) => {
 };
 
 export const isFilledArray = (val: any) => Array.isArray(val) && !!val.length;
+
+export const isObjectWithProps = (val: any) =>
+  val && typeof val === "object" && Object.keys(val).length;

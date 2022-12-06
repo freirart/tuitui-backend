@@ -9,6 +9,7 @@ import {
 import connection from "../../database";
 import { UserClass } from "./user";
 import { TagClass } from "./tag";
+import { isObjectWithProps } from "../utils";
 
 @pre<ArticleClass>(
   "save",
@@ -52,6 +53,10 @@ export class ArticleClass {
         delete document[key];
       }
     }
+
+    document.tags = document.tags.filter(
+      (tag) => isObjectWithProps(tag) && "tagName" in tag
+    );
 
     return document;
   }
