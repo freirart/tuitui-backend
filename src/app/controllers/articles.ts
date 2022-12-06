@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Types } from "mongoose";
+import util from "util";
 
 import { ArticleModel } from "../models/article";
 import { UserModel } from "../models/user";
@@ -170,7 +171,7 @@ export const search = async (req: Request, res: Response) => {
     const andFilter = [];
 
     if (id) {
-      const formattedId = String(id).replace(/\s/gi, '');
+      const formattedId = String(id).replace(/\s/gi, "");
 
       if (Types.ObjectId.isValid(formattedId)) {
         andFilter.push({ _id: formattedId });
@@ -213,9 +214,24 @@ export const search = async (req: Request, res: Response) => {
     let filteredData = data;
 
     if (author) {
-      const authorRegex = new RegExp(author as string, "ig");
+      const authorRegex = new RegExp(author as string, "i");
 
-      filteredData = data.filter((d) => authorRegex.test(d.author["username"]));
+      const desiredArticles = [];
+
+      for (const article of data) {
+        const userName = article.author["username"];
+        const isValidArticle = authorRegex.test(userName);
+
+        if (
+          isValidArticle ||
+          (isFilledArray(desiredArticles) &&
+            desiredArticles.find((d) => d.author["username"] === userName))
+        ) {
+          desiredArticles.push(article);
+        }
+      }
+
+      filteredData = desiredArticles;
     }
 
     return res
