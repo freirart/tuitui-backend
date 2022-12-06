@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { Types } from "mongoose";
-import util from "util";
 
 import { ArticleModel } from "../models/article";
 import { UserModel } from "../models/user";
