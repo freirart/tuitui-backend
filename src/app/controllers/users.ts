@@ -19,15 +19,7 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
   const { username, password, description, userEmail } = req.body;
 
   try {
-    const validationResult = validateParams({ username, password, description, userEmail });
-
-    if (validationResult.yes) {
-      return res.status(400).json({
-        message: `No '${validationResult.whichOne}' provided.`,
-        documentation: PROJECT_DOC,
-      });
-    }
-
+    validateParams({ username, password, description, userEmail });
     const existingUser = await UserModel.findOne({ userEmail }).exec();
 
     if (existingUser) {
@@ -54,15 +46,7 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
   const { userEmail, password } = req.body;
 
   try {
-    const validationResult = validateParams({ userEmail, password });
-
-    if (validationResult.yes) {
-      return res.status(400).json({
-        message: `No '${validationResult.whichOne}' provided.`,
-        documentation: PROJECT_DOC,
-      });
-    }
-
+    validateParams({ userEmail, password });
     const user = await UserModel.findOne({ userEmail }).select("+password");
 
     if (!user) {
