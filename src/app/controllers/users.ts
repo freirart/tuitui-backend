@@ -86,7 +86,7 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-export const remove = async (req: Request, res: Response) => {
+export const remove = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req;
 
   try {
@@ -105,7 +105,7 @@ export const remove = async (req: Request, res: Response) => {
   }
 };
 
-export const edit = async (req: Request, res: Response) => {
+export const edit = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req;
 
   try {
@@ -125,7 +125,7 @@ export const edit = async (req: Request, res: Response) => {
   }
 };
 
-export const search = async (req: Request, res: Response) => {
+export const search = async (req: Request, res: Response, next: NextFunction) => {
   const { username, userEmail } = req.query;
 
   try {
