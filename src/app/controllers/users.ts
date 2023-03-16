@@ -138,7 +138,7 @@ export const search = async (req: Request, res: Response) => {
       });
     }
 
-    const andFilter = [{ isDeleted: { $ne: true } }];
+    const andFilter = [].push({ isDeleted: { $ne: true } }) as any;
 
     if (username) {
       andFilter.push({ username: { $regex: username, $options: "i" } });
