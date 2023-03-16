@@ -19,7 +19,15 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
   const { username, password, description, userEmail } = req.body;
 
   try {
-    validateParams({ username, password, description, userEmail });
+    const validationResult = validateParams({ username, password, description, userEmail });
+
+    if (validationResult.yes) {
+      return res.status(400).json({
+        message: `No '${validationResult.message}' provided.`,
+        documentation: PROJECT_DOC,
+      });
+    }
+
     const existingUser = await UserModel.findOne({ userEmail }).exec();
 
     if (existingUser) {
@@ -46,7 +54,15 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
   const { userEmail, password } = req.body;
 
   try {
-    validateParams({ userEmail, password });
+    const validationResult = validateParams({ userEmail, password });
+
+    if (validationResult.yes) {
+      return res.status(400).json({
+        message: `No '${validationResult.message}' provided.`,
+        documentation: PROJECT_DOC,
+      });
+    }
+
     const user = await UserModel.findOne({ userEmail }).select("+password");
 
     if (!user) {
@@ -117,7 +133,7 @@ export const search = async (req: Request, res: Response) => {
 
     if (validationResult.yes) {
       return res.status(400).json({
-        message: `No '${validationResult.whichOne}' provided.`,
+        message: `No '${validationResult.message}' provided.`,
         documentation: PROJECT_DOC,
       });
     }
