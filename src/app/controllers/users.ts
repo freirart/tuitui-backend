@@ -1,73 +1,54 @@
-import { Request, Response } from "express";
-
+import { Request, Response, NextFunction } from "express";
 import { UserModel } from "../models/user";
-
-import { areAllExpectedParamsUndefined, isThereAnyBodyParamUndefined } from "../utils";
+import { validateParams } from "../utils";
 
 const { PROJECT_DOC } = process.env;
 
-export const signUp = async (req: Request, res: Response) => {
+/**
+ * Middleware global para tratamento de erros.
+ */
+export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error(err);
+  res.status(500).json({ message: "Something went wrong." });
+};
+
+/**
+ * Cria um novo usuário.
+ */
+export const signUp = async (req: Request, res: Response, next: NextFunction) => {
   const { username, password, description, userEmail } = req.body;
 
   try {
-    const result = isThereAnyBodyParamUndefined({
-      username,
-      password,
-      description,
-      userEmail,
-    });
+    validateParams({ username, password, description, userEmail });
+    const existingUser = await UserModel.findOne({ userEmail }).exec();
 
-    if (result.yes) {
-      return res.status(400).json({
-        message: `No '${result.whichOne}' provided.`,
-        documentation: PROJECT_DOC,
-      });
-    }
-
-    const isExistingUser = await UserModel.findOne({ userEmail }).exec();
-
-    if (isExistingUser) {
+    if (existingUser) {
       return res.status(400).json({
         message: "User already exists.",
         documentation: PROJECT_DOC,
       });
     }
 
-    const user = await UserModel.create({
-      username,
-      password,
-      description,
-      userEmail,
-    });
-
+    const user = await UserModel.create({ username, password, description, userEmail });
     user.save();
 
     req.userId = user._id;
-    res
-      .status(201)
-      .json({ user: user.getDocument(), token: user.generateToken() });
+    res.status(201).json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Registration failed." });
+    next(err);
   }
-
-  return res;
 };
 
-export const signIn = async (req: Request, res: Response) => {
+/**
+ * Realiza o login do usuário.
+ */
+export const signIn = async (req: Request, res: Response, next: NextFunction) => {
   const { userEmail, password } = req.body;
 
   try {
-    const result = isThereAnyBodyParamUndefined({ userEmail, password });
-
-    if (result.yes) {
-      return res.status(400).json({
-        message: `No '${result.whichOne}' provided.`,
-        documentation: PROJECT_DOC,
-      });
-    }
-
+    validateParams({ userEmail, password });
     const user = await UserModel.findOne({ userEmail }).select("+password");
+
     if (!user) {
       return res.status(401).json({
         message: "User does not exist.",
@@ -83,15 +64,10 @@ export const signIn = async (req: Request, res: Response) => {
     }
 
     req.userId = user._id;
-    res
-      .status(200)
-      .json({ user: user.getDocument(), token: user.generateToken() });
+    res.status(200).json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Couldn't sign in." });
+    next(err);
   }
-
-  return res;
 };
 
 export const remove = async (req: Request, res: Response) => {
