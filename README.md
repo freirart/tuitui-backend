@@ -4,6 +4,10 @@
 
 ## Proposta
 
+Este é o repositório do backend do projeto Tuitui, desenvolvido com Node.js, TypeScript e o framework Express.
+
+O objetivo do projeto é fornecer uma API para que os usuários possam criar e visualizar mensagens curtas (tweets), bem como criar e autenticar usuários.
+
 ## Tecnologias
 
 ### Arquitetura da aplicação
@@ -25,15 +29,63 @@
 
 ## Modo de usar
 
+Antes de executar o projeto, é necessário instalar as dependências. Para isso, basta executar o comando:
+
+```sh
+npm install
+```
+
+Em seguida, é preciso criar um arquivo .env na raiz do projeto com as seguintes variáveis de ambiente:
+
+```sh
+DATABASE_URL=<url para o banco de dados>
+SECRET=<chave secreta para autenticação>
+```
+
+O ```DATABASE_URL``` deve conter a URL de conexão com o banco de dados, que pode ser local ou remoto. A ```SECRET``` é uma string usada para criptografar as senhas dos usuários.
+
+#### Executando o projeto
+
+Para executar o projeto, basta executar o comando:
+
+```sh
+npm run dev
+```
+Esse comando inicia o servidor localmente na porta 3000.
+
 ### Consumindo Endpoints
+
+O projeto oferece as seguintes rotas:
+
+- GET /articles - Retorna uma lista de artigos[*](/README.md#auth)
+
+- POST /articles - Cria um novo artigo[*](/README.md#auth)
+
+- DELETE /article - Exclui um artigo[*](/README.md#auth)
+
+- PUT /article - Altera algumas informações do artigo[*](/README.md#auth)
+
+
+- GET /tags - Retorna tags[*](/README.md#auth)
+
+- POST /tags - Cria novas tags[*](/README.md#auth)
+
+
+- POST /users/signup - Cria um novo usuário
+
+- POST /users/signin - Autentica um usuário
+
+- GET /users - Retorna informções do usuári[*](/README.md#auth)
+
+- DELETE /users - Exclui usuário[*](/README.md#auth)
+
+- PUT /users - Altera algumas informações do usuário[*](/README.md#auth)
+
+<h6 id="auth">Necessário autenticação.<h6>
 
 ### Testando a aplicação
 
 ## Licença MIT
 Direitos Reservados 2022 Artur Freire
 
-Permissão é garantida por este meio, livre de ônus, para qualquer pessoa que obtenha uma cópia desde software e arquivos de documentação associados, para lidar com o Software sem restrições, incluindo nenhuma limitação de direitos de uso, cópia, modificação, fusão, publicação, distribuição, sublicenciamento, e/ou venda de cópias do Software, e para permitir que pessoas a quem foi fornecido o Software façam o mesmo, sujeitos às seguintes condições:
-
-A nota de direitos reservados acima, e a nota de permissão devem ser incluídas em todas as cópias ou porções substanciais do Software.
-
-O SOFTWARE É FORNECIDO “COMO É”, SEM QUALQUER TIPO DE GARANTIAS, EXPRESSA OU IMPLÍCITA, INCLUINDO PORÉM AS GARANTIAS DE COMERCIALIZAÇÃO, ADEQUADAS PARA UM DETERMINADO PROPÓSITO E NÃO VIOLAÇÃO. EM NENHUMA HIPÓTESE DEVERÃO OS AUTORES OU DETENTORES DOS DIREITOS AUTORAIS SEREM RESPONSÁVEIS POR ALGUMA RECLAMAÇÃO, DANO OU OUTRA SUSCETIBILIDADE, SEJA EM UMA AÇÃO DE CONTRATO, DELITO OU DE OUTRA FORMA, DECORRENTES, DE OU EM CONEXÃO COM O SOFTWARE OU O USO OU OUTRAS AÇÕES DO SOFTWARE.
+Este projeto é licenciado sob a licença MIT.
