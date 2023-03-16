@@ -85,6 +85,10 @@ O projeto oferece as seguintes rotas:
 
 ### Testando a aplicação
 
+### Contribuindo
+
+Se você quiser contribuir com o projeto, fique à vontade para abrir uma pull request ou uma issue. Toda ajuda é bem-vinda!
+
 ## Licença MIT
 Direitos Reservados 2022 Artur Freire
 
