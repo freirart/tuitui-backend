@@ -1,6 +1,4 @@
-export const getMissingArgumentMessage = (arg: string) => {
-  return `Missing argument: ${arg}`;
-};
+export const getMissingArgumentMessage = (arg: string) => `Missing argument: ${arg}`;
 
 export const validateParams = (paramsObject: object, shouldHaveAll = true) => {
   const validationObj = { message: "", valid: true };
