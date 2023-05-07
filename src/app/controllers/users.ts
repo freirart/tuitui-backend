@@ -14,13 +14,13 @@ export const signUp = async (req: Request, res: Response) => {
       username,
       password,
       description,
-      userEmail,
+      userEmail
     });
 
     if (result.yes) {
       return res.status(400).json({
         message: `No '${result.whichOne}' provided.`,
-        documentation: PROJECT_DOC,
+        documentation: PROJECT_DOC
       });
     }
 
@@ -29,7 +29,7 @@ export const signUp = async (req: Request, res: Response) => {
     if (isExistingUser) {
       return res.status(400).json({
         message: "User already exists.",
-        documentation: PROJECT_DOC,
+        documentation: PROJECT_DOC
       });
     }
 
@@ -37,15 +37,13 @@ export const signUp = async (req: Request, res: Response) => {
       username,
       password,
       description,
-      userEmail,
+      userEmail
     });
 
     user.save();
 
     req.userId = user._id;
-    res
-      .status(201)
-      .json({ user: user.getDocument(), token: user.generateToken() });
+    res.status(201).json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Registration failed." });
@@ -63,29 +61,31 @@ export const signIn = async (req: Request, res: Response) => {
     if (result.yes) {
       return res.status(400).json({
         message: `No '${result.whichOne}' provided.`,
-        documentation: PROJECT_DOC,
+        documentation: PROJECT_DOC
       });
     }
 
-    const user = await UserModel.findOne({ userEmail }).select("+password");
+    const user = await UserModel.findOne({
+      userEmail,
+      $and: [{ isDeleted: { $ne: true } }]
+    }).select("+password");
+
     if (!user) {
       return res.status(401).json({
         message: "User does not exist.",
-        documentation: PROJECT_DOC,
+        documentation: PROJECT_DOC
       });
     }
 
     if (!(await user.checkPassword(password))) {
       return res.status(401).json({
         message: "Wrong password.",
-        documentation: PROJECT_DOC,
+        documentation: PROJECT_DOC
       });
     }
 
     req.userId = user._id;
-    res
-      .status(200)
-      .json({ user: user.getDocument(), token: user.generateToken() });
+    res.status(200).json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Couldn't sign in." });
@@ -140,13 +140,14 @@ export const search = async (req: Request, res: Response) => {
 
   try {
     const result = areAllExpectedParamsUndefined({
-      username, userEmail
+      username,
+      userEmail
     });
 
     if (result.yes) {
       return res.status(400).json({
         message: result.message,
-        documentation: PROJECT_DOC,
+        documentation: PROJECT_DOC
       });
     }
 
@@ -173,4 +174,3 @@ export const search = async (req: Request, res: Response) => {
 
   return res;
 };
-
