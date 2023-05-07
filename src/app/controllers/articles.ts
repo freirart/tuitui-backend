@@ -4,11 +4,7 @@ import { Types } from "mongoose";
 import { ArticleModel } from "../models/article";
 import { UserModel } from "../models/user";
 
-import {
-  areAllExpectedParamsUndefined,
-  isFilledArray,
-  isThereAnyBodyParamUndefined,
-} from "../utils/index";
+import { validateParams, isFilledArray } from "../utils/index";
 
 const { PROJECT_DOC } = process.env;
 
@@ -17,18 +13,15 @@ export const create = async (req: Request, res: Response) => {
   const { userId: author } = req;
 
   try {
-    const result = isThereAnyBodyParamUndefined({
+    const { valid, message } = validateParams({
       author,
       title,
       content,
       tags,
     });
 
-    if (result.yes) {
-      return res.status(400).json({
-        message: `No '${result.whichOne}' provided.`,
-        documentation: PROJECT_DOC,
-      });
+    if (!valid) {
+      return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
     const createdArticle = await ArticleModel.create({
@@ -53,13 +46,10 @@ export const remove = async (req: Request, res: Response) => {
   const { userId } = req;
 
   try {
-    const result = isThereAnyBodyParamUndefined({ articleId, userId });
+    const { valid, message } = validateParams({ articleId, userId });
 
-    if (result.yes) {
-      return res.status(400).json({
-        message: `No '${result.whichOne}' provided.`,
-        documentation: PROJECT_DOC,
-      });
+    if (!valid) {
+      return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
     if (!Types.ObjectId.isValid(articleId as string)) {
@@ -153,18 +143,15 @@ export const search = async (req: Request, res: Response) => {
   const { author, title, tags, id } = req.query;
 
   try {
-    const result = areAllExpectedParamsUndefined({
+    const { valid, message } = validateParams({
       author,
       title,
       tags,
       id,
     });
 
-    if (result.yes) {
-      return res.status(400).json({
-        message: result.message,
-        documentation: PROJECT_DOC,
-      });
+    if (!valid) {
+      return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
     const andFilter = [];
