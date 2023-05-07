@@ -22,12 +22,15 @@ export const signUp = async (req: Request, res: Response) => {
       return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
-    const existingUser = await UserModel.findOne({ userEmail, $and: [{ isDeleted: { $ne: true } }] }).exec();
+    const existingUser = await UserModel.findOne({
+      userEmail,
+      $and: [{ isDeleted: { $ne: true } }]
+    }).exec();
 
     if (existingUser) {
       return res.status(400).json({
         message: "User already exists.",
-        documentation: PROJECT_DOC,
+        documentation: PROJECT_DOC
       });
     }
 
@@ -54,19 +57,22 @@ export const signIn = async (req: Request, res: Response) => {
       return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
-    const user = await UserModel.findOne({ userEmail, $and: [{ isDeleted: { $ne: true } }] }).select("+password");
+    const user = await UserModel.findOne({
+      userEmail,
+      $and: [{ isDeleted: { $ne: true } }]
+    }).select("+password");
 
     if (!user) {
       return res.status(401).json({
         message: "User does not exist.",
-        documentation: PROJECT_DOC,
+        documentation: PROJECT_DOC
       });
     }
 
     if (!(await user.checkPassword(password))) {
       return res.status(401).json({
         message: "Wrong password.",
-        documentation: PROJECT_DOC,
+        documentation: PROJECT_DOC
       });
     }
 
@@ -140,10 +146,9 @@ export const search = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       users: data.map((user) => user.getDocument()),
-      count: data.length,
+      count: data.length
     });
   } catch (err) {
     standardErrorHandler(err, res);
   }
 };
-
