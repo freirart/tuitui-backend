@@ -2,14 +2,14 @@ export const getMissingArgumentMessage = (arg: string) => {
   return `Missing argument: ${arg}`;
 };
 
-export const validateParams = (paramsObject: object) => {
+export const validateParams = (paramsObject: object, shouldHaveAll = true) => {
   const validationObj = { message: "", valid: true };
   const allUndefined = Object.values(paramsObject).every((val) => val === undefined);
 
   if (allUndefined) {
     validationObj.valid = false;
     validationObj.message = `Missing all arguments: ${Object.keys(paramsObject).join(", ")}`;
-  } else {
+  } else if (shouldHaveAll) {
     for (const key in paramsObject) {
       if (!paramsObject[key]) {
         validationObj.valid = false;

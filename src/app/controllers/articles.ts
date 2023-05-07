@@ -148,7 +148,7 @@ export const search = async (req: Request, res: Response) => {
       title,
       tags,
       id,
-    });
+    }, false);
 
     if (!valid) {
       return res.status(400).json({ message, documentation: PROJECT_DOC });
