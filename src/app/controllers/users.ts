@@ -22,7 +22,7 @@ export const signUp = async (req: Request, res: Response) => {
       return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
-    const existingUser = await UserModel.findOne({ userEmail }).exec();
+    const existingUser = await UserModel.findOne({ userEmail, $and: [{ isDeleted: { $ne: true } }] }).exec();
 
     if (existingUser) {
       return res.status(400).json({
@@ -54,7 +54,7 @@ export const signIn = async (req: Request, res: Response) => {
       return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
-    const user = await UserModel.findOne({ userEmail }).select("+password");
+    const user = await UserModel.findOne({ userEmail, $and: [{ isDeleted: { $ne: true } }] }).select("+password");
 
     if (!user) {
       return res.status(401).json({
