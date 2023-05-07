@@ -3,6 +3,9 @@ import { Types } from "mongoose";
 
 import { ArticleModel } from "../models/article";
 import { UserModel } from "../models/user";
+import { TagClass } from "../models/tag";
+
+import { tagCreation } from "./tags";
 
 import { validateParams, isFilledArray } from "../utils/index";
 
@@ -19,6 +22,8 @@ export const create = async (req: Request, res: Response) => {
       content,
       tags,
     });
+
+    tagCreation(tags.map((t: TagClass) => t.tagName));
 
     if (!valid) {
       return res.status(400).json({ message, documentation: PROJECT_DOC });
