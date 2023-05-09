@@ -1,5 +1,5 @@
 require("dotenv").config({
-  path: process.env.NODE_ENV === "TEST" ? ".env.test" : ".env",
+  path: process.env.NODE_ENV === "TEST" ? ".env.test" : ".env"
 });
 
 import express, { Request, Response } from "express";
@@ -28,7 +28,7 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({
     message: "Invalid endpoint.",
     documentation:
-      "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md",
+      "https://github.com/freirart/desafio-tecnico-music-playce/blob/main/public/docs.md"
   });
 });
 

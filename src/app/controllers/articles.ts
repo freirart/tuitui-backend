@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Types } from "mongoose";
 
 import { ArticleModel } from "../models/article";
-import { UserModel } from "../models/user";
+import { UserModel, UserClass } from "../models/user";
 import { TagClass } from "../models/tag";
 
 import { tagCreation } from "./tags";
@@ -20,7 +20,7 @@ export const create = async (req: Request, res: Response) => {
       author,
       title,
       content,
-      tags,
+      tags
     });
 
     tagCreation(tags.map((t: TagClass) => t.tagName));
@@ -33,7 +33,7 @@ export const create = async (req: Request, res: Response) => {
       author,
       title,
       content,
-      tags,
+      tags
     });
     createdArticle.save();
 
@@ -75,10 +75,9 @@ export const remove = async (req: Request, res: Response) => {
           existingArticle.save();
 
           return res.status(200).json({ message: "Successfully deleted." });
-        } else {
-          defaultErrorMessage += ": article already deleted!";
-          res.status(400);
         }
+        defaultErrorMessage += ": article already deleted!";
+        res.status(400);
       } else {
         res.status(401);
       }
@@ -123,13 +122,10 @@ export const edit = async (req: Request, res: Response) => {
           }
 
           const updatedArticle = await existingArticle.save();
-          return res
-            .status(200)
-            .json({ updatedArticle: updatedArticle.getDocument() });
-        } else {
-          defaultErrorMessage += ": article deleted!";
-          res.status(400);
+          return res.status(200).json({ updatedArticle: updatedArticle.getDocument() });
         }
+        defaultErrorMessage += ": article deleted!";
+        res.status(400);
       } else {
         res.status(401);
       }
@@ -148,12 +144,15 @@ export const search = async (req: Request, res: Response) => {
   const { author, title, tags, id } = req.query;
 
   try {
-    const { valid, message } = validateParams({
-      author,
-      title,
-      tags,
-      id,
-    }, false);
+    const { valid, message } = validateParams(
+      {
+        author,
+        title,
+        tags,
+        id
+      },
+      false
+    );
 
     if (!valid) {
       return res.status(400).json({ message, documentation: PROJECT_DOC });
@@ -188,7 +187,7 @@ export const search = async (req: Request, res: Response) => {
         console.error(err);
         return res.status(400).json({
           message: "Could not understand provided tags",
-          documentation: PROJECT_DOC,
+          documentation: PROJECT_DOC
         });
       }
     }
@@ -210,13 +209,15 @@ export const search = async (req: Request, res: Response) => {
       const desiredArticles = [];
 
       for (const article of data) {
-        const userName = article.author["username"];
+        const articleAuthor = article.author as UserClass;
+
+        const userName = articleAuthor.username;
         const isValidArticle = authorRegex.test(userName);
 
         if (
           isValidArticle ||
           (isFilledArray(desiredArticles) &&
-            desiredArticles.find((d) => d.author["username"] === userName))
+            desiredArticles.find((d) => d.author.username === userName))
         ) {
           desiredArticles.push(article);
         }
@@ -225,9 +226,7 @@ export const search = async (req: Request, res: Response) => {
       filteredData = desiredArticles;
     }
 
-    return res
-      .status(200)
-      .json({ data: filteredData.map((d) => d.getDocument()) });
+    return res.status(200).json({ data: filteredData.map((d) => d.getDocument()) });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Something went wrong." });

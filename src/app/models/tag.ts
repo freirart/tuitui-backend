@@ -1,9 +1,4 @@
-import {
-  DocumentType,
-  getModelForClass,
-  prop,
-  ReturnModelType,
-} from "@typegoose/typegoose";
+import { DocumentType, getModelForClass, prop, ReturnModelType } from "@typegoose/typegoose";
 import connection from "../../database";
 
 export class TagClass {
@@ -38,17 +33,17 @@ export class TagClass {
     tagName: string,
     shouldBeExact = false
   ) {
-    const filter = tagName
-      ? {
-        tagName: { $regex: new RegExp(tagName, shouldBeExact ? "i" : "gi") },
-      }
-      : {};
+    let filter = {};
+
+    if (tagName) {
+      filter = {
+        tagName: { $regex: new RegExp(tagName, shouldBeExact ? "i" : "gi") }
+      };
+    }
 
     const foundTags = await this.find(filter);
 
-    const formattedTags = foundTags.map((tag) =>
-      TagClass.removeUnusedKeysFromObj(tag)
-    );
+    const formattedTags = foundTags.map((tag) => TagClass.removeUnusedKeysFromObj(tag));
 
     return formattedTags;
   }
@@ -56,5 +51,5 @@ export class TagClass {
 
 export const TagModel = getModelForClass(TagClass, {
   existingConnection: connection,
-  options: { customName: "tags" },
+  options: { customName: "tags" }
 });

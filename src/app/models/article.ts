@@ -1,23 +1,13 @@
-import {
-  DocumentType,
-  getModelForClass,
-  prop,
-  Ref,
-  Severity,
-  pre,
-} from "@typegoose/typegoose";
+import { DocumentType, getModelForClass, prop, Ref, Severity, pre } from "@typegoose/typegoose";
 import connection from "../../database";
 import { UserClass } from "./user";
 import { TagClass } from "./tag";
 import { isObjectWithProps } from "../utils";
 
-@pre<ArticleClass>(
-  "save",
-  function (this: DocumentType<ArticleClass>, next: Function) {
-    this.lastModifiedAt = new Date();
-    next();
-  }
-)
+@pre<ArticleClass>("save", function (this: DocumentType<ArticleClass>, next: Function) {
+  this.lastModifiedAt = new Date();
+  next();
+})
 export class ArticleClass {
   @prop({ autopopulate: true, ref: () => UserClass, required: true })
   public author!: Ref<UserClass>;
@@ -54,9 +44,7 @@ export class ArticleClass {
       }
     }
 
-    document.tags = document.tags.filter(
-      (tag) => isObjectWithProps(tag) && "tagName" in tag
-    );
+    document.tags = document.tags.filter((tag) => isObjectWithProps(tag) && "tagName" in tag);
 
     return document;
   }
@@ -64,5 +52,5 @@ export class ArticleClass {
 
 export const ArticleModel = getModelForClass(ArticleClass, {
   existingConnection: connection,
-  options: { customName: "articles" },
+  options: { customName: "articles" }
 });
