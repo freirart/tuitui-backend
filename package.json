@@ -12,7 +12,7 @@
     "postinstall": "tsc",
     "watch-node": "tsnd --transpile-only --ignore-watch node_modules --respawn src/server.ts",
     "watch-ts": "tsc -w",
-    "mongo": "docker-compose -f mongo.yml up --quiet-pull"
+    "mongo": "docker compose -f mongo.yml up --quiet-pull"
   },
   "repository": {
     "type": "git",
@@ -37,7 +37,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "~6.6.0",
     "mongoose-autopopulate": "^0.16.1"
   },
@@ -53,7 +53,14 @@
     "@types/mongoose": "^5.10.0",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
-    "eslint": "^8.26.0",
+    "eslint": "^8.40.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "factory-girl": "^5.0.4",
     "jest": "^26.6.3",
     "supertest": "^6.0.1",
