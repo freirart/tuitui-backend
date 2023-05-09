@@ -6,7 +6,7 @@
 
 Este é o repositório do backend do projeto Tuitui, desenvolvido com Node.js, TypeScript e o framework Express.
 
-O objetivo do projeto é fornecer uma API para que os usuários possam criar e visualizar mensagens curtas (tweets), bem como criar e autenticar usuários.
+O objetivo do projeto é fornecer uma API para que os usuários possam criar e visualizar artigos.
 
 ## Tecnologias
 
@@ -29,18 +29,19 @@ O objetivo do projeto é fornecer uma API para que os usuários possam criar e v
 
 ## Modo de usar
 
-Antes de executar o projeto, é necessário instalar as dependências. Para isso, basta executar o comando:
+A API é escrita em Node JS e, portanto, deve-se tê-lo instalado.
+
+Utilize a versão do Node contida no package.json.
+
+Caso tenha ao mudar a versão instalada recomenda-se a utilização do [nvm](https://github.com/nvm-sh/nvm).
+
+Uma vez que o node/npm estejam instalados e na versão correta se faz necessário instalar as dependências do projeto. Para isso, basta executar o comando:
 
 ```sh
 npm install
 ```
 
-Em seguida, é preciso criar um arquivo .env na raiz do projeto com as seguintes variáveis de ambiente:
-
-```sh
-DATABASE_URL=<url para o banco de dados>
-SECRET=<chave secreta para autenticação>
-```
+Em seguida, é preciso criar um arquivo .env na raiz do projeto com pelo menos todas as de exemplo contidas no arquivo .env.test.
 
 O ```DATABASE_URL``` deve conter a URL de conexão com o banco de dados, que pode ser local ou remoto. A ```SECRET``` é uma string usada para criptografar as senhas dos usuários.
 
@@ -51,7 +52,15 @@ Para executar o projeto, basta executar o comando:
 ```sh
 npm run dev
 ```
-Esse comando inicia o servidor localmente na porta 3000.
+Esse comando inicia o servidor localmente na porta **3000**.
+
+Caso deseje levantar um container com a aplicação do mongodb local basta rodar em uma outra instância do terminal a seguinte instrução:
+
+```sh
+npm run mongo
+```
+
+Para acessar a interface que interage com o banco local basta acessar [esta](http://localhost:8081) rota!
 
 ### Consumindo Endpoints
 
@@ -63,7 +72,7 @@ O projeto oferece as seguintes rotas:
 
 - DELETE /article - Exclui um artigo[*](/README.md#auth)
 
-- PUT /article - Altera algumas informações do artigo[*](/README.md#auth)
+- PUT /article - Altera informações do artigo[*](/README.md#auth)
 
 
 - GET /tags - Retorna tags[*](/README.md#auth)
@@ -75,13 +84,13 @@ O projeto oferece as seguintes rotas:
 
 - POST /users/signin - Autentica um usuário
 
-- GET /users - Retorna informções do usuári[*](/README.md#auth)
+- GET /users - Retorna informções do usuário[*](/README.md#auth)
 
 - DELETE /users - Exclui usuário[*](/README.md#auth)
 
 - PUT /users - Altera algumas informações do usuário[*](/README.md#auth)
 
-<h6 id="auth">Necessário autenticação.<h6>
+<span id="auth">[*](/README.md#auth) Necessário autenticação.<span>
 
 ### Testando a aplicação
 
@@ -90,6 +99,6 @@ O projeto oferece as seguintes rotas:
 Se você quiser contribuir com o projeto, fique à vontade para abrir uma pull request ou uma issue. Toda ajuda é bem-vinda!
 
 ## Licença MIT
-Direitos Reservados 2022 Artur Freire
+Direitos Reservados 2023 Tuitui Project
 
 Este projeto é licenciado sob a licença MIT.
