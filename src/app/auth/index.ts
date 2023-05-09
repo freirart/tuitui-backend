@@ -3,11 +3,7 @@ import jwt from "jsonwebtoken";
 
 import { UserModel } from "../models/user";
 
-export const validateToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+exports.validateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return res.status(401).json({ message: "No token provided." });
@@ -15,20 +11,16 @@ export const validateToken = (
 
   const parts = authHeader.split(" ");
   if (parts.length !== 2) {
-    return res
-      .status(401)
-      .json({ message: "Invalid token: unknown token format." });
+    return res.status(401).json({ message: "Invalid token: unknown token format." });
   }
 
   const [scheme, token] = parts;
 
   if (!/^Bearer$/i.test(scheme)) {
-    return res
-      .status(401)
-      .json({ message: "Invalid token: no 'Bearer' provided." });
+    return res.status(401).json({ message: "Invalid token: no 'Bearer' provided." });
   }
 
-  jwt.verify(
+  return jwt.verify(
     token,
     process.env.SECRET_KEY as jwt.Secret,
     async (err, decoded?: { id: string }) => {
@@ -43,7 +35,7 @@ export const validateToken = (
       }
 
       req.userId = user._id;
-      next();
+      return next();
     }
   );
 };

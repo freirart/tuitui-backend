@@ -38,9 +38,9 @@ export const signUp = async (req: Request, res: Response) => {
     user.save();
 
     req.userId = user._id;
-    res.status(201).json({ user: user.getDocument(), token: user.generateToken() });
+    return res.status(201).json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
-    standardErrorHandler(err, res);
+    return standardErrorHandler(err, res);
   }
 };
 
@@ -77,9 +77,9 @@ export const signIn = async (req: Request, res: Response) => {
     }
 
     req.userId = user._id;
-    res.status(200).json({ user: user.getDocument(), token: user.generateToken() });
+    return res.status(200).json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
-    standardErrorHandler(err, res);
+    return standardErrorHandler(err, res);
   }
 };
 
@@ -98,7 +98,7 @@ export const remove = async (req: Request, res: Response) => {
 
     return res.status(401).json({ message: "Can't delete this user." });
   } catch (err) {
-    standardErrorHandler(err, res);
+    return standardErrorHandler(err, res);
   }
 };
 
@@ -118,7 +118,7 @@ export const edit = async (req: Request, res: Response) => {
     const updatedUser = await existingUser.save();
     return res.status(200).json({ updatedUser: updatedUser.getDocument() });
   } catch (err) {
-    standardErrorHandler(err, res);
+    return standardErrorHandler(err, res);
   }
 };
 
@@ -132,7 +132,9 @@ export const search = async (req: Request, res: Response) => {
       return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
-    const andFilter = [].push({ isDeleted: { $ne: true } }) as any;
+    const andFilter = [];
+
+    andFilter.push({ isDeleted: { $ne: true } });
 
     if (username) {
       andFilter.push({ username: { $regex: username, $options: "i" } });
@@ -149,6 +151,6 @@ export const search = async (req: Request, res: Response) => {
       count: data.length
     });
   } catch (err) {
-    standardErrorHandler(err, res);
+    return standardErrorHandler(err, res);
   }
 };

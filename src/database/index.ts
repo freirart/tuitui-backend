@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
-const { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_HOST, MONGODB_PORT } = process.env;
+const { NODE_ENV, MONGODB_URI, MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_HOST, MONGODB_PORT } =
+  process.env;
 
-const connectString =
-  process.env.NODE_ENV === "TEST"
-    ? `mongodb://localhost/${Date.now()}`
-    : process.env.NODE_ENV !== "PROD"
-      ? `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}`
-      : process.env.MONGODB_URI;
+let connectString = MONGODB_URI;
+
+if (NODE_ENV !== "PROD") {
+  connectString = `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}`;
+}
 
 const conn = mongoose.createConnection(connectString);
 
