@@ -9,6 +9,8 @@ if (NODE_ENV !== "PROD") {
   connectString = `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}`;
 }
 
-const conn = mongoose.createConnection(connectString);
+console.log({ NODE_ENV, connectString });
+
+const conn = mongoose.createConnection(connectString, { dbName: "tuitui" });
 
 export default conn;
