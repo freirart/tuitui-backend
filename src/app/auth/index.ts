@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 import { UserModel } from "../models/user";
 
-exports.validateToken = (req: Request, res: Response, next: NextFunction) => {
+export const validateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return res.status(401).json({ message: "No token provided." });
