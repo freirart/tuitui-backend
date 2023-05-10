@@ -32,6 +32,7 @@ module.exports = {
     "import/first": 0,
     "import/no-import-module-exports": 0,
     "no-await-in-loop": 0,
-    "no-nested-ternary": 0
+    "no-nested-ternary": 0,
+    "import/prefer-default-export": 0
   }
 };
