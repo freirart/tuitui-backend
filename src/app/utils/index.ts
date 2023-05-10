@@ -1,34 +1,23 @@
-interface emptyKeyObj {
-  yes: boolean;
-  whichOne: string | number;
-}
+export const getMissingArgumentMessage = (arg: string) => `Missing argument: ${arg}`;
 
-export const isThereAnyBodyParamUndefined = (paramsObject: object) => {
-  const keys = Object.keys(paramsObject);
-  const defaultObj = { whichOne: -1, yes: false } as emptyKeyObj;
+export const validateParams = (paramsObject: object, shouldHaveAll = true) => {
+  const validationObj = { message: "", valid: true };
+  const allUndefined = Object.values(paramsObject).every((val) => val === undefined);
 
-  for (const key of keys) {
-    if (!paramsObject[key]) {
-      defaultObj.yes = true;
-      defaultObj.whichOne = key;
-      break;
+  if (allUndefined) {
+    validationObj.valid = false;
+    validationObj.message = `Missing all arguments: ${Object.keys(paramsObject).join(", ")}`;
+  } else if (shouldHaveAll) {
+    for (const key in paramsObject) {
+      if (!paramsObject[key]) {
+        validationObj.valid = false;
+        validationObj.message = getMissingArgumentMessage(key);
+        break;
+      }
     }
   }
 
-  return defaultObj;
-};
-
-export const areAllExpectedParamsUndefined = (paramsObject: object) => {
-  const result = { yes: false, message: "" };
-
-  if (Object.values(paramsObject).every((val) => val === undefined)) {
-    result.yes = true;
-    result.message = `Missing at least one argument: ${Object.keys(
-      paramsObject
-    ).join(", ")}`;
-  }
-
-  return result;
+  return validationObj;
 };
 
 export const isFilledArray = (val: any) => Array.isArray(val) && !!val.length;

@@ -1,68 +1,60 @@
 import { Request, Response } from "express";
-
 import { UserModel } from "../models/user";
-
-import { areAllExpectedParamsUndefined, isThereAnyBodyParamUndefined } from "../utils";
+import { validateParams } from "../utils";
 
 const { PROJECT_DOC } = process.env;
 
+export const standardErrorHandler = (err: any, res: Response) => {
+  console.error(err);
+  return res.status(500).json({ message: "Something went wrong." });
+};
+
+/**
+ * Cria um novo usuário.
+ */
 export const signUp = async (req: Request, res: Response) => {
   const { username, password, description, userEmail } = req.body;
 
   try {
-    const result = isThereAnyBodyParamUndefined({
-      username,
-      password,
-      description,
-      userEmail
-    });
+    const { valid, message } = validateParams({ username, password, description, userEmail });
 
-    if (result.yes) {
-      return res.status(400).json({
-        message: `No '${result.whichOne}' provided.`,
-        documentation: PROJECT_DOC
-      });
+    if (!valid) {
+      return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
-    const isExistingUser = await UserModel.findOne({ userEmail }).exec();
+    const existingUser = await UserModel.findOne({
+      userEmail,
+      $and: [{ isDeleted: { $ne: true } }]
+    }).exec();
 
-    if (isExistingUser) {
+    if (existingUser) {
       return res.status(400).json({
         message: "User already exists.",
         documentation: PROJECT_DOC
       });
     }
 
-    const user = await UserModel.create({
-      username,
-      password,
-      description,
-      userEmail
-    });
-
+    const user = await UserModel.create({ username, password, description, userEmail });
     user.save();
 
     req.userId = user._id;
-    res.status(201).json({ user: user.getDocument(), token: user.generateToken() });
+    return res.status(201).json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Registration failed." });
+    return standardErrorHandler(err, res);
   }
-
-  return res;
 };
 
+/**
+ * Realiza o login do usuário.
+ */
 export const signIn = async (req: Request, res: Response) => {
   const { userEmail, password } = req.body;
 
   try {
-    const result = isThereAnyBodyParamUndefined({ userEmail, password });
+    const { valid, message } = validateParams({ userEmail, password });
 
-    if (result.yes) {
-      return res.status(400).json({
-        message: `No '${result.whichOne}' provided.`,
-        documentation: PROJECT_DOC
-      });
+    if (!valid) {
+      return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
     const user = await UserModel.findOne({
@@ -85,13 +77,10 @@ export const signIn = async (req: Request, res: Response) => {
     }
 
     req.userId = user._id;
-    res.status(200).json({ user: user.getDocument(), token: user.generateToken() });
+    return res.status(200).json({ user: user.getDocument(), token: user.generateToken() });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Couldn't sign in." });
+    return standardErrorHandler(err, res);
   }
-
-  return res;
 };
 
 export const remove = async (req: Request, res: Response) => {
@@ -102,15 +91,14 @@ export const remove = async (req: Request, res: Response) => {
 
     if (existingUser && !existingUser.isDeleted) {
       existingUser.isDeleted = true;
-      existingUser.save();
+      await existingUser.save();
 
       return res.status(200).json({ message: "Successfully deleted." });
     }
 
     return res.status(401).json({ message: "Can't delete this user." });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Something went wrong!" });
+    return standardErrorHandler(err, res);
   }
 };
 
@@ -130,8 +118,7 @@ export const edit = async (req: Request, res: Response) => {
     const updatedUser = await existingUser.save();
     return res.status(200).json({ updatedUser: updatedUser.getDocument() });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Something went wrong!" });
+    return standardErrorHandler(err, res);
   }
 };
 
@@ -139,38 +126,31 @@ export const search = async (req: Request, res: Response) => {
   const { username, userEmail } = req.query;
 
   try {
-    const result = areAllExpectedParamsUndefined({
-      username,
-      userEmail
-    });
+    const { valid, message } = validateParams({ username, userEmail }, false);
 
-    if (result.yes) {
-      return res.status(400).json({
-        message: result.message,
-        documentation: PROJECT_DOC
-      });
+    if (!valid) {
+      return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
     const andFilter = [];
 
+    andFilter.push({ isDeleted: { $ne: true } });
+
     if (username) {
-      andFilter.push({ username: new RegExp(username as string, "ig") });
+      andFilter.push({ username: { $regex: username, $options: "i" } });
     }
 
     if (userEmail) {
       andFilter.push({ userEmail });
     }
 
-    // there are no reasons to show deleted users
-    andFilter.push({ isDeleted: { $ne: true } });
-
     const data = await UserModel.find({ $and: andFilter });
 
-    return res.status(200).json({ data: data.map((d) => d.getDocument()) });
+    return res.status(200).json({
+      users: data.map((user) => user.getDocument()),
+      count: data.length
+    });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Something went wrong." });
+    return standardErrorHandler(err, res);
   }
-
-  return res;
 };
