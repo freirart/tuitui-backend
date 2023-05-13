@@ -27,7 +27,7 @@
           {
             "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
             "name": "Authorization",
-            "value": "Bearer {{ _.access_token }}",
+            "value": "Bearer {{ _.token }}",
             "description": "",
             "disabled": false
           }
@@ -90,7 +90,7 @@
           {
             "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
             "name": "Authorization",
-            "value": "Bearer {{ _.access_token }}",
+            "value": "Bearer {{ _.token }}",
             "description": ""
           },
           {
@@ -125,7 +125,7 @@
           {
             "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
             "name": "Authorization",
-            "value": "Bearer {{ _.access_token }}",
+            "value": "Bearer {{ _.token }}",
             "description": ""
           }
         ],
@@ -246,7 +246,7 @@
           {
             "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
             "name": "Authorization",
-            "value": "Bearer {{ _.access_token }}",
+            "value": "Bearer {{ _.token }}",
             "description": "",
             "disabled": false
           }
@@ -292,7 +292,7 @@
           {
             "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
             "name": "Authorization",
-            "value": "Bearer {{ _.access_token }}",
+            "value": "Bearer {{ _.token }}",
             "description": ""
           },
           {
@@ -334,7 +334,7 @@
           {
             "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
             "name": "Authorization",
-            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NTZkODQ1NGJjYTdkY2YzYWVkMmMwNiIsImlhdCI6MTY4MzQyMzcwMywiZXhwIjoxNjgzNDMwOTAzfQ.Et3VJuIBmAw8-2BOxggyQjaYS-1I389_PByBqxKXJGE",
+            "value": "Bearer {{ _.token }}",
             "description": ""
           }
         ],
@@ -372,7 +372,7 @@
           {
             "id": "pair_c277542b967247c0af5726caf25e96a6",
             "name": "Authorization",
-            "value": "Bearer {{ _.access_token }}",
+            "value": "Bearer {{ _.token }}",
             "description": ""
           }
         ],
@@ -410,7 +410,7 @@
           {
             "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
             "name": "Authorization",
-            "value": "Bearer {{ _.access_token }}",
+            "value": "Bearer {{ _.token }}",
             "description": "",
             "disabled": false
           }
@@ -461,7 +461,7 @@
           {
             "id": "pair_44ddd4d548e9417999943f74e0e3d98a",
             "name": "Authorization",
-            "value": "Bearer {{ _.access_token }}",
+            "value": "Bearer {{ _.token }}",
             "description": ""
           }
         ],
@@ -484,12 +484,12 @@
         "name": "Base Environment",
         "data": {
           "tuitui": "https://tuitui-backend.onrender.com",
-          "access_token": ""
+          "token": ""
         },
         "dataPropertyOrder": {
           "&": [
             "tuitui",
-            "access_token"
+            "token"
           ]
         },
         "color": null,
