@@ -1,0 +1,552 @@
+{
+    "_type": "export",
+    "__export_format": 4,
+    "__export_date": "2023-05-07T06:15:41.275Z",
+    "__export_source": "insomnia.desktop.app:v2023.2.0",
+    "resources": [
+      {
+        "_id": "req_5a22e280bfd742998565a943ab4d04bb",
+        "parentId": "fld_4ebe69624e144b38938c6df856e3d3a6",
+        "modified": 1683435222558,
+        "created": 1683404644589,
+        "url": "{{ _.tuitui }}/users",
+        "name": "users",
+        "description": "",
+        "method": "GET",
+        "body": {},
+        "parameters": [
+          {
+            "id": "pair_6e12a4468c204bd58269b847f14f3e05",
+            "name": "username",
+            "value": "frei",
+            "description": "",
+            "disabled": false
+          }
+        ],
+        "headers": [
+          {
+            "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
+            "name": "Authorization",
+            "value": "Bearer {{ _.token }}",
+            "description": "",
+            "disabled": false
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683404644589,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "fld_4ebe69624e144b38938c6df856e3d3a6",
+        "parentId": "wrk_0af925aa506543058d8cdf2e408f2ce9",
+        "modified": 1683383282989,
+        "created": 1683383282989,
+        "name": "users",
+        "description": "",
+        "environment": {},
+        "environmentPropertyOrder": null,
+        "metaSortKey": -1683383282989,
+        "_type": "request_group"
+      },
+      {
+        "_id": "wrk_0af925aa506543058d8cdf2e408f2ce9",
+        "parentId": null,
+        "modified": 1683383270515,
+        "created": 1683383270516,
+        "name": "tuitui",
+        "description": "",
+        "scope": "collection",
+        "_type": "workspace"
+      },
+      {
+        "_id": "req_817bdfdb223a4ffb8f6dc92471c76538",
+        "parentId": "fld_4ebe69624e144b38938c6df856e3d3a6",
+        "modified": 1683435246566,
+        "created": 1683410523818,
+        "url": "{{ _.tuitui }}/users",
+        "name": "users",
+        "description": "",
+        "method": "PUT",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n\t\"userId\": \"64572ec528609806f8ae1dfe\",\n\t\"description\": \"Desenvolvedor de Software Fullstack\"\n}"
+        },
+        "parameters": [
+          {
+            "id": "pair_6e12a4468c204bd58269b847f14f3e05",
+            "name": "username",
+            "value": "freirart",
+            "description": ""
+          }
+        ],
+        "headers": [
+          {
+            "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
+            "name": "Authorization",
+            "value": "Bearer {{ _.token }}",
+            "description": ""
+          },
+          {
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "pair_b42e3110fd554783b0146f5aa0985635"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683395242685,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_19ac64f277e14a7ab666b158b4d3026f",
+        "parentId": "fld_4ebe69624e144b38938c6df856e3d3a6",
+        "modified": 1683435173398,
+        "created": 1683410925810,
+        "url": "{{ _.tuitui }}/users",
+        "name": "users",
+        "description": "",
+        "method": "DELETE",
+        "body": {},
+        "parameters": [],
+        "headers": [
+          {
+            "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
+            "name": "Authorization",
+            "value": "Bearer {{ _.token }}",
+            "description": ""
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683390541733,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_3b106ba20d0241748d9ec574df4a34ee",
+        "parentId": "fld_4ebe69624e144b38938c6df856e3d3a6",
+        "modified": 1683435203748,
+        "created": 1683385840781,
+        "url": "{{ _.tuitui }}/users/signup",
+        "name": "signup",
+        "description": "",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n\t\"username\": \"freirart\",\n\t\"password\": \"1234\",\n\t\"description\": \"Desenvolvedor Fullstack\",\n\t\"userEmail\": \"artur@unisantos.br\"\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683385840781,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_ca4d8c41c93e48c7a635bca886964c60",
+        "parentId": "fld_4ebe69624e144b38938c6df856e3d3a6",
+        "modified": 1683437166281,
+        "created": 1683386152917,
+        "url": "{{ _.tuitui }}/users/signin",
+        "name": "signin",
+        "description": "",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n\t\"password\": \"12FeijaoComArroz\",\n\t\"userEmail\": \"artur@unisantos.br\"\n}\n"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683307233413,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_3d531ceb3def446b8831d40689fe9afb",
+        "parentId": "fld_32527556f12a42c79324b08edcc1c14f",
+        "modified": 1683437208315,
+        "created": 1683424228162,
+        "url": "{{ _.tuitui }}/articles",
+        "name": "articles",
+        "description": "",
+        "method": "GET",
+        "body": {},
+        "parameters": [
+          {
+            "id": "pair_6e12a4468c204bd58269b847f14f3e05",
+            "name": "author",
+            "value": "",
+            "description": "",
+            "disabled": true
+          },
+          {
+            "id": "pair_769c4f5cec4e446bb9e7b0a8367cc1fb",
+            "name": "title",
+            "value": "a",
+            "description": "",
+            "disabled": true
+          },
+          {
+            "id": "pair_3cbf4b44633a4dc58d5fa250c0dbe477",
+            "name": "tags",
+            "value": "[\"Tecnologia\"]",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "id": "pair_2f5f9bd4ca7b4a0bb872c4750475efd4",
+            "name": "id",
+            "value": "",
+            "description": "",
+            "disabled": true
+          }
+        ],
+        "headers": [
+          {
+            "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
+            "name": "Authorization",
+            "value": "Bearer {{ _.token }}",
+            "description": "",
+            "disabled": false
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683404644589,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "fld_32527556f12a42c79324b08edcc1c14f",
+        "parentId": "wrk_0af925aa506543058d8cdf2e408f2ce9",
+        "modified": 1683424228156,
+        "created": 1683424228156,
+        "name": "articles",
+        "description": "",
+        "environment": {},
+        "environmentPropertyOrder": null,
+        "metaSortKey": -1683344617600.75,
+        "_type": "request_group"
+      },
+      {
+        "_id": "req_b8472d4aab044cf4b1e3b97381af5b83",
+        "parentId": "fld_32527556f12a42c79324b08edcc1c14f",
+        "modified": 1683435466377,
+        "created": 1683424228164,
+        "url": "{{ _.tuitui }}/articles",
+        "name": "articles",
+        "description": "",
+        "method": "PUT",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n\t\"articleId\": \"64572f3128609806f8ae1e12\",\n\t\"content\": \"sem sombra de dúvidas\",\n\t\"title\": \"MC Pipokinha beijar a Belle Bellinha é crime?\"\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
+            "name": "Authorization",
+            "value": "Bearer {{ _.token }}",
+            "description": ""
+          },
+          {
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "pair_75cd4f74844749bbb2def7260bb48e9c"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683395242685,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_f6e2b77e6f1748a69bd481753ddb6161",
+        "parentId": "fld_32527556f12a42c79324b08edcc1c14f",
+        "modified": 1683427791748,
+        "created": 1683424228165,
+        "url": "{{ _.tuitui }}/articles",
+        "name": "articles",
+        "description": "",
+        "method": "DELETE",
+        "body": {},
+        "parameters": [
+          {
+            "id": "pair_6e12a4468c204bd58269b847f14f3e05",
+            "name": "articleId",
+            "value": "6457076107eef039b78ca9a9",
+            "description": ""
+          }
+        ],
+        "headers": [
+          {
+            "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
+            "name": "Authorization",
+            "value": "Bearer {{ _.token }}",
+            "description": ""
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683390541733,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_cd0ba4867000401c8d7d4fbfbc4d8f94",
+        "parentId": "fld_32527556f12a42c79324b08edcc1c14f",
+        "modified": 1683435390020,
+        "created": 1683424228158,
+        "url": "{{ _.tuitui }}/articles",
+        "name": "articles",
+        "description": "",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n\t\"title\": \"Impactos ambientais da Pesca Ilegal\",\n\t\"content\": \"eu acho que sim\",\n\t\"tags\": [\n\t\t{\"tagName\": \"Pesca\"},\n\t\t{\"tagName\": \"Crime\"},\n\t\t{\"tagName\": \"Pesca Ilegal\"}\n\t]\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "pair_0c9cbd93b20c4faa999ce4ac23667dd9"
+          },
+          {
+            "id": "pair_c277542b967247c0af5726caf25e96a6",
+            "name": "Authorization",
+            "value": "Bearer {{ _.token }}",
+            "description": ""
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683385840781,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_69c84d7c376f4e94beb37862bcae7270",
+        "parentId": "fld_f9a77af78886448a92103106d8d66c31",
+        "modified": 1683435322509,
+        "created": 1683423423082,
+        "url": "{{ _.tuitui }}/tags",
+        "name": "tags",
+        "description": "",
+        "method": "GET",
+        "body": {},
+        "parameters": [
+          {
+            "id": "pair_6e12a4468c204bd58269b847f14f3e05",
+            "name": "tagName",
+            "value": "tec",
+            "description": "",
+            "disabled": true
+          }
+        ],
+        "headers": [
+          {
+            "id": "pair_ca584d6f22b24ffe9ef832efce02ea48",
+            "name": "Authorization",
+            "value": "Bearer {{ _.token }}",
+            "description": "",
+            "disabled": false
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683404644589,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "fld_f9a77af78886448a92103106d8d66c31",
+        "parentId": "wrk_0af925aa506543058d8cdf2e408f2ce9",
+        "modified": 1683423433338,
+        "created": 1683423423078,
+        "name": "tags",
+        "description": "",
+        "environment": {},
+        "environmentPropertyOrder": null,
+        "metaSortKey": -1683305952212.5,
+        "_type": "request_group"
+      },
+      {
+        "_id": "req_a543408a9815441b98d870657e18c5a9",
+        "parentId": "fld_f9a77af78886448a92103106d8d66c31",
+        "modified": 1683435348549,
+        "created": 1683423423079,
+        "url": "{{ _.tuitui }}/tags",
+        "name": "tags",
+        "description": "",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n\t\"tagList\": [\"Tecnologia\", \"Inteligência Artificial\"]\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "pair_d66f2790258f4317b1f4aa3d8334a57e"
+          },
+          {
+            "id": "pair_44ddd4d548e9417999943f74e0e3d98a",
+            "name": "Authorization",
+            "value": "Bearer {{ _.token }}",
+            "description": ""
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1683385840781,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "env_875a8905617ecdc953e12e3f315b9a8b35d7172b",
+        "parentId": "wrk_0af925aa506543058d8cdf2e408f2ce9",
+        "modified": 1683440043600,
+        "created": 1683383270519,
+        "name": "Base Environment",
+        "data": {
+          "tuitui": "https://tuitui-backend.onrender.com",
+          "token": ""
+        },
+        "dataPropertyOrder": {
+          "&": [
+            "tuitui",
+            "token"
+          ]
+        },
+        "color": null,
+        "isPrivate": false,
+        "metaSortKey": 1683383270519,
+        "_type": "environment"
+      },
+      {
+        "_id": "jar_875a8905617ecdc953e12e3f315b9a8b35d7172b",
+        "parentId": "wrk_0af925aa506543058d8cdf2e408f2ce9",
+        "modified": 1683440032649,
+        "created": 1683383270519,
+        "name": "Default Jar",
+        "cookies": [
+          {
+            "key": "__cf_bm",
+            "value": "qP5nG_dxKVQyONHsoTqY1SpjODwybT1TnUG2bUXMonA-1683440032-0-AZ4HUtMNEXEco/9SmqcMFJJ889AQ+RBt7dcKTudfLUR4sCFJjVFnVeUmfRE1N0DQNip1r1iVLI14YBA110yyry8=",
+            "expires": "2023-05-07T06:43:52.000Z",
+            "domain": "onrender.com",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "extensions": [
+              "SameSite=None"
+            ],
+            "hostOnly": false,
+            "creation": "2023-05-07T05:48:47.379Z",
+            "lastAccessed": "2023-05-07T06:13:52.649Z",
+            "id": "8257193575729591"
+          },
+          {
+            "key": "_cfuvid",
+            "value": "qaq8sDcHuxGTEKDhvOuvvZgXK7.xS2ZzNY3IF6LziSI-1683438527228-0-604800000",
+            "domain": "onrender.com",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "extensions": [
+              "SameSite=None"
+            ],
+            "hostOnly": false,
+            "creation": "2023-05-07T05:48:47.380Z",
+            "lastAccessed": "2023-05-07T05:48:47.380Z",
+            "id": "7703998327006527"
+          }
+        ],
+        "_type": "cookie_jar"
+      },
+      {
+        "_id": "spc_598e7364480948e0a0c576bf468e3ee2",
+        "parentId": "wrk_0af925aa506543058d8cdf2e408f2ce9",
+        "modified": 1683383270516,
+        "created": 1683383270516,
+        "fileName": "tuitui",
+        "contents": "",
+        "contentType": "yaml",
+        "_type": "api_spec"
+      }
+    ]
+  }

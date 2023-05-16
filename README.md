@@ -66,6 +66,8 @@ Para acessar a interface que interage com o banco local basta acessar [esta](htt
 
 O projeto oferece as seguintes rotas:
 
+Um arquivo json para insominia pode ser baixado [clicando aqui](https://raw.githubusercontent.com/freirart/tuitui-backend/main/public/TUITUI_REQUESTS.json?raw=true).
+
 - GET /articles - Retorna uma lista de artigos[*](/README.md#auth)
 
 - POST /articles - Cria um novo artigo[*](/README.md#auth)
