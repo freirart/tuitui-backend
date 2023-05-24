@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
+
 import { UserModel } from "../models/user";
+
 import { validateParams } from "../utils";
 
 const { PROJECT_DOC } = process.env;
@@ -123,10 +126,10 @@ export const edit = async (req: Request, res: Response) => {
 };
 
 export const search = async (req: Request, res: Response) => {
-  const { username, userEmail } = req.query;
+  const { username, userEmail, userId } = req.query;
 
   try {
-    const { valid, message } = validateParams({ username, userEmail }, false);
+    const { valid, message } = validateParams({ username, userEmail, userId }, false);
 
     if (!valid) {
       return res.status(400).json({ message, documentation: PROJECT_DOC });
@@ -141,7 +144,17 @@ export const search = async (req: Request, res: Response) => {
     }
 
     if (userEmail) {
-      andFilter.push({ userEmail });
+      andFilter.push({ userEmail: { $regex: userEmail, $options: "i" } });
+    }
+
+    if (userId) {
+      const formattedId = String(userId).replace(/\s/gi, "");
+
+      if (Types.ObjectId.isValid(formattedId)) {
+        andFilter.push({ _id: formattedId });
+      } else {
+        return res.status(400).json({ message: "Invalid user id." });
+      }
     }
 
     const data = await UserModel.find({ $and: andFilter });
