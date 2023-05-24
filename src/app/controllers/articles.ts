@@ -141,7 +141,7 @@ export const edit = async (req: Request, res: Response) => {
 };
 
 export const search = async (req: Request, res: Response) => {
-  const { author, title, tags, id } = req.query;
+  const { author, title, tags, id, authorId } = req.query;
 
   try {
     const { valid, message } = validateParams(
@@ -149,7 +149,8 @@ export const search = async (req: Request, res: Response) => {
         author,
         title,
         tags,
-        id
+        id,
+        authorId
       },
       false
     );
@@ -167,6 +168,16 @@ export const search = async (req: Request, res: Response) => {
         andFilter.push({ _id: formattedId });
       } else {
         return res.status(400).json({ message: "Invalid article id." });
+      }
+    }
+
+    if (authorId) {
+      const formattedId = String(authorId).replace(/\s/gi, "");
+
+      if (Types.ObjectId.isValid(formattedId)) {
+        andFilter.push({ author: formattedId });
+      } else {
+        return res.status(400).json({ message: "Invalid author id." });
       }
     }
 
