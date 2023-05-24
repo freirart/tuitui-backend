@@ -141,7 +141,7 @@ export const edit = async (req: Request, res: Response) => {
 };
 
 export const search = async (req: Request, res: Response) => {
-  const { author, title, tags, id } = req.query;
+  const { author, title, tags, id, authorID } = req.query;
 
   try {
     const { valid, message } = validateParams(
@@ -149,7 +149,8 @@ export const search = async (req: Request, res: Response) => {
         author,
         title,
         tags,
-        id
+        id,
+        authorID
       },
       false
     );
@@ -218,6 +219,33 @@ export const search = async (req: Request, res: Response) => {
           isValidArticle ||
           (isFilledArray(desiredArticles) &&
             desiredArticles.find((d) => d.author.username === userName))
+        ) {
+          desiredArticles.push(article);
+        }
+      }
+
+      filteredData = desiredArticles;
+    }
+
+    if (authorID) {
+      const formattedAuthorId = String(authorID).replace(/\s/gi, "");
+      
+      if (!Types.ObjectId.isValid(formattedAuthorId)) {
+        return res.status(400).json({ message: "Invalid author id." });
+      }
+
+      const authorIDRegex = new RegExp(authorID as string, "i");
+      const desiredArticles = [];
+
+      for (const article of data) {
+        const articleAuthor = article.author as UserClass;
+        const userId = articleAuthor["_id"];
+        const isValidArticle = authorIDRegex.test(userId);
+
+        if (
+          isValidArticle ||
+          (isFilledArray(desiredArticles) &&
+            desiredArticles.find((d) => d.author._id === userId))
         ) {
           desiredArticles.push(article);
         }

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserModel } from "../models/user";
 import { validateParams } from "../utils";
+import { Types } from "mongoose";
 
 const { PROJECT_DOC } = process.env;
 
@@ -123,7 +124,7 @@ export const edit = async (req: Request, res: Response) => {
 };
 
 export const search = async (req: Request, res: Response) => {
-  const { username, userEmail } = req.query;
+  const { username, userEmail, id } = req.query;
 
   try {
     const { valid, message } = validateParams({ username, userEmail }, false);
@@ -135,6 +136,16 @@ export const search = async (req: Request, res: Response) => {
     const andFilter = [];
 
     andFilter.push({ isDeleted: { $ne: true } });
+
+    if (id) {
+      const formattedId = String(id).replace(/\s/gi, "");
+
+      if (Types.ObjectId.isValid(formattedId)) {
+        andFilter.push({ _id: formattedId });
+      } else {
+        return res.status(400).json({ message: "Invalid user id." });
+      }
+    }
 
     if (username) {
       andFilter.push({ username: { $regex: username, $options: "i" } });
