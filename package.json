@@ -8,12 +8,12 @@
   },
   "scripts": {
     "start": "node dist/src/server.js",
-    "dev": "tsnd --transpile-only --ignore-watch node_modules --respawn src/server.ts",
-    "postinstall": "tsc",
+    "dev": "tsnd --poll --transpile-only --ignore-watch node_modules --respawn src/server.ts",
     "build": "tsc",
     "watch-node": "tsnd --transpile-only --ignore-watch node_modules --respawn src/server.ts",
     "watch-ts": "tsc -w",
-    "mongo": "docker compose -f mongo.yml up --quiet-pull"
+    "docker:mongo": "docker compose -f mongo.yml up --quiet-pull",
+    "docker:dev": "docker compose -f development.yml up --quiet-pull"
   },
   "repository": {
     "type": "git",
