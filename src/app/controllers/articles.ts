@@ -141,7 +141,7 @@ export const edit = async (req: Request, res: Response) => {
 };
 
 export const search = async (req: Request, res: Response) => {
-  const { author, title, tags, id, authorId } = req.query;
+  const { author, title, tags, id, authorId, lastUpdated } = req.query;
 
   try {
     const { valid, message } = validateParams(
@@ -155,51 +155,53 @@ export const search = async (req: Request, res: Response) => {
       false
     );
 
-    if (!valid) {
+    if (!(valid || lastUpdated)) {
       return res.status(400).json({ message, documentation: PROJECT_DOC });
     }
 
     const andFilter = [];
 
-    if (id) {
-      const formattedId = String(id).replace(/\s/gi, "");
+    if (!lastUpdated) {
+      if (id) {
+        const formattedId = String(id).replace(/\s/gi, "");
 
-      if (Types.ObjectId.isValid(formattedId)) {
-        andFilter.push({ _id: formattedId });
-      } else {
-        return res.status(400).json({ message: "Invalid article id." });
-      }
-    }
-
-    if (authorId) {
-      const formattedId = String(authorId).replace(/\s/gi, "");
-
-      if (Types.ObjectId.isValid(formattedId)) {
-        andFilter.push({ author: formattedId });
-      } else {
-        return res.status(400).json({ message: "Invalid author id." });
-      }
-    }
-
-    if (title) {
-      andFilter.push({ title: new RegExp(title as string, "ig") });
-    }
-
-    if (tags) {
-      try {
-        const formattedTags = JSON.parse(tags as string);
-
-        if (!isFilledArray(formattedTags)) {
-          throw new Error("Provided tags are not a filled array");
+        if (Types.ObjectId.isValid(formattedId)) {
+          andFilter.push({ _id: formattedId });
+        } else {
+          return res.status(400).json({ message: "Invalid article id." });
         }
+      }
 
-        andFilter.push({ "tags.tagName": { $in: formattedTags } });
-      } catch (err) {
-        console.error(err);
-        return res.status(400).json({
-          message: "Could not understand provided tags",
-          documentation: PROJECT_DOC
-        });
+      if (authorId) {
+        const formattedId = String(authorId).replace(/\s/gi, "");
+
+        if (Types.ObjectId.isValid(formattedId)) {
+          andFilter.push({ author: formattedId });
+        } else {
+          return res.status(400).json({ message: "Invalid author id." });
+        }
+      }
+
+      if (title) {
+        andFilter.push({ title: new RegExp(title as string, "ig") });
+      }
+
+      if (tags) {
+        try {
+          const formattedTags = JSON.parse(tags as string);
+
+          if (!isFilledArray(formattedTags)) {
+            throw new Error("Provided tags are not a filled array");
+          }
+
+          andFilter.push({ "tags.tagName": { $in: formattedTags } });
+        } catch (err) {
+          console.error(err);
+          return res.status(400).json({
+            message: "Could not understand provided tags",
+            documentation: PROJECT_DOC
+          });
+        }
       }
     }
 
